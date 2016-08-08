@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2016.8.7)  8 AUG 2016 09:46
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2016.8.7)  8 AUG 2016 13:16
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -408,7 +408,10 @@ LaTeX Font Info:    Try loading font information for OT1+pcr on input line 32.
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1pcr.fd
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
-) [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
+)
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
 
 
 ]
@@ -416,21 +419,21 @@ File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
 File: images/shapelet1.png Graphic file (type png)
 
 <use images/shapelet1.png>
-Package pdftex.def Info: images/shapelet1.png used on input line 77.
+Package pdftex.def Info: images/shapelet1.png used on input line 74.
 (pdftex.def)             Requested size: 256.0748pt x 162.89558pt.
  <images/shapelet2.png, id=12, 149.358pt x 93.951pt>
 File: images/shapelet2.png Graphic file (type png)
 
 <use images/shapelet2.png>
-Package pdftex.def Info: images/shapelet2.png used on input line 80.
+Package pdftex.def Info: images/shapelet2.png used on input line 77.
 (pdftex.def)             Requested size: 256.0748pt x 161.09369pt.
 
-Overfull \hbox (4.0748pt too wide) in paragraph at lines 77--84
+Overfull \hbox (4.0748pt too wide) in paragraph at lines 74--81
  []$[]$ 
  []
 
 
-Overfull \hbox (4.0748pt too wide) in paragraph at lines 77--84
+Overfull \hbox (4.0748pt too wide) in paragraph at lines 74--81
  []$ 
  []
 
@@ -438,10 +441,10 @@ Overfull \hbox (4.0748pt too wide) in paragraph at lines 77--84
 File: images/parrelel.png Graphic file (type png)
 
 <use images/parrelel.png>
-Package pdftex.def Info: images/parrelel.png used on input line 92.
+Package pdftex.def Info: images/parrelel.png used on input line 89.
 (pdftex.def)             Requested size: 258.0pt x 142.14322pt.
 
-Overfull \hbox (6.0pt too wide) in paragraph at lines 92--93
+Overfull \hbox (6.0pt too wide) in paragraph at lines 89--90
 [][] 
  []
 
@@ -463,88 +466,100 @@ Missing character: There is no ù in font ptmr7t!
 File: images/shapeletGraph.png Graphic file (type png)
 
 <use images/shapeletGraph.png>
-Package pdftex.def Info: images/shapeletGraph.png used on input line 112.
+Package pdftex.def Info: images/shapeletGraph.png used on input line 109.
 (pdftex.def)             Requested size: 258.0pt x 146.08055pt.
 
-Overfull \hbox (6.0pt too wide) in paragraph at lines 112--113
+Overfull \hbox (6.0pt too wide) in paragraph at lines 109--110
+[][] 
+ []
+
+<images/airQuality.png, id=22, 1752.5475pt x 397.485pt>
+File: images/airQuality.png Graphic file (type png)
+
+<use images/airQuality.png>
+Package pdftex.def Info: images/airQuality.png used on input line 124.
+(pdftex.def)             Requested size: 258.0pt x 58.51025pt.
+
+Overfull \hbox (6.0pt too wide) in paragraph at lines 124--125
 [][] 
  []
 
 Missing character: There is no ‚ in font ptmr7t!
 Missing character: There is no Ä in font ptmr7t!
 Missing character: There is no ô in font ptmr7t!
-<images/Architecture.png, id=22, 1154.3125pt x 788.9475pt>
+<images/Architecture.png, id=23, 1154.3125pt x 788.9475pt>
 File: images/Architecture.png Graphic file (type png)
 
 <use images/Architecture.png>
-Package pdftex.def Info: images/Architecture.png used on input line 132.
+Package pdftex.def Info: images/Architecture.png used on input line 135.
 (pdftex.def)             Requested size: 258.0pt x 176.3378pt.
 
-Overfull \hbox (6.0pt too wide) in paragraph at lines 132--133
+Overfull \hbox (6.0pt too wide) in paragraph at lines 135--136
 [][] 
  []
 
 
-Overfull \hbox (27.51646pt too wide) in paragraph at lines 147--148
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+Overfull \hbox (27.51646pt too wide) in paragraph at lines 150--151
 []\OT1/ptm/b/n/10 pro-ce-dure \OT1/ptm/m/sc/10 ShapeletLearner\OT1/ptm/m/n/10 (
 $\OML/cmm/m/it/10 D; MaxLength; MinLength$\OT1/ptm/m/n/10 )
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 161--162
+Underfull \hbox (badness 10000) in paragraph at lines 164--165
 [] $[] \OMS/cmsy/m/n/10  
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 163--164
+Underfull \hbox (badness 10000) in paragraph at lines 166--167
 [] $[] \OMS/cmsy/m/n/10  
  []
 
-
-Underfull \vbox (badness 1478) has occurred while \output is active []
-
- [3 <./images/shapeletGraph.png> <./images/Architecture.png>]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
-Overfull \hbox (24.70622pt too wide) in paragraph at lines 222--223
+[3 <./images/shapeletGraph.png> <./images/airQuality.png>]
+Overfull \hbox (24.70622pt too wide) in paragraph at lines 225--226
 []\OT1/ptm/b/n/10 pro-ce-dure \OT1/ptm/m/sc/10 GetIm-por-tantShapelets\OT1/ptm/
 m/n/10 ($\OML/cmm/m/it/10 S; classValues; data$\OT1/ptm/m/n/10 ) 
  []
 
 
-Overfull \hbox (1.82956pt too wide) in paragraph at lines 227--228
+Overfull \hbox (1.82956pt too wide) in paragraph at lines 230--231
 [] $[][][]$ 
  []
 
 
-Overfull \hbox (14.10971pt too wide) in paragraph at lines 231--232
+Overfull \hbox (14.10971pt too wide) in paragraph at lines 234--235
 [] \OT1/pcr/m/n/10 shapeletBucket(classVal).\OT1/ptm/b/n/10 put(\OT1/pcr/m/n/10
  shapelet\OT1/ptm/b/n/10 ) 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 237--238
+Underfull \hbox (badness 10000) in paragraph at lines 240--241
 [] $[] \OMS/cmsy/m/n/10  
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 239--242
+Underfull \hbox (badness 10000) in paragraph at lines 242--245
 [] $[] \OMS/cmsy/m/n/10  
  []
 
 
-Underfull \hbox (badness 4765) in paragraph at lines 239--242
+Underfull \hbox (badness 4765) in paragraph at lines 242--245
 [][]$ $[] \OMS/cmsy/m/n/10  
  []
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [4]
+ [4 <./images/Architecture.png>]
 Missing character: There is no ‚ in font ptmr7t!
 Missing character: There is no Ä in font ptmr7t!
 Missing character: There is no ô in font ptmr7t!
+ [5]
+Missing character: There is no ‚ in font ptmr7t!
+Missing character: There is no Ä in font ptmr7t!
+Missing character: There is no ì in font ptmr7t!
 Missing character: There is no ‚ in font ptmr7t!
 Missing character: There is no Ä in font ptmr7t!
 Missing character: There is no ì in font ptmr7t!
@@ -552,17 +567,12 @@ Missing character: There is no ‚ in font ptmr7t!
 Missing character: There is no Ä in font ptmr7t!
 Missing character: There is no ì in font ptmr7t!
 
-[5]
-Missing character: There is no ‚ in font ptmr7t!
-Missing character: There is no Ä in font ptmr7t!
-Missing character: There is no ì in font ptmr7t!
-
-Underfull \hbox (badness 10000) in paragraph at lines 279--280
+Underfull \hbox (badness 10000) in paragraph at lines 283--284
 []\OT1/ptm/m/n/8 A. Mar-gara, G. Cu-gola, and G. Tam-bur-relli, "Learn-ing
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 279--280
+Underfull \hbox (badness 10000) in paragraph at lines 283--284
 \OT1/ptm/m/n/8 from the past," pp. 4758, May 2014. [On-line]. Avail-able:
  []
 
@@ -570,7 +580,7 @@ Missing character: There is no ‚ in font ptmr7t!
 Missing character: There is no Ä in font ptmr7t!
 Missing character: There is no ì in font ptmr7t!
 
-Underfull \hbox (badness 1762) in paragraph at lines 282--283
+Underfull \hbox (badness 1762) in paragraph at lines 286--287
 []\OT1/ptm/m/n/8 Wistuba, M., Grabocka, J. and Schmidt-Thieme, L. (2015a) Ti-
  []
 
@@ -595,13 +605,13 @@ Before submitting the final camera ready copy, remember to:
 
 ] (./main.aux) ) 
 Here is how much of TeX's memory you used:
- 4947 strings out of 493029
- 78082 string characters out of 6136235
+ 4952 strings out of 493029
+ 78199 string characters out of 6136235
  144195 words of memory out of 5000000
- 8411 multiletter control sequences out of 15000+600000
+ 8415 multiletter control sequences out of 15000+600000
  42204 words of font info for 92 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 38i,11n,46p,1252b,346s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 38i,11n,46p,1650b,346s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</us
 r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/shar
 e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texli
@@ -611,10 +621,10 @@ mf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist
 urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmbi
 8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/sh
 are/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on main.pdf (6 pages, 836763 bytes).
+Output written on main.pdf (6 pages, 955454 bytes).
 PDF statistics:
- 71 PDF objects out of 1000 (max. 8388607)
+ 72 PDF objects out of 1000 (max. 8388607)
  43 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 26 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 31 words of extra memory for PDF output out of 10000 (max. 10000000)
 
