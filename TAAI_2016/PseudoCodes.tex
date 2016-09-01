@@ -69,32 +69,53 @@
 \end{algorithm}
 
 \begin{algorithm}
-  \caption{Important Shapelet Finder Algorithm}\label{shapeletFInder}
-  \begin{algorithmic}[1]
-     \Procedure{GetImportantShapelets}{$S,classValues,classValueDataset$}
-     \State $\texttt{shapeletArr} \gets \{\}$
-     \State $\texttt{classValueProb} \gets \{\}$
-     \For{\texttt{each value in classValues}}
-     \State $\texttt{shapeletBucket(value)} \gets \{\}$
-     \State $\texttt{classValueProb.add(}  \textbf{findProbs(}\texttt{classValueDataset,classValue))}$
-     \EndFor
-     \For{\texttt{each shapelet in S}}
-     \State $\texttt{classValue} \gets \textbf{maxProbClassVal(} \texttt{shapelet} \textbf{)}$
-     \State \texttt{shapeletBucket(classValue).}\textbf{put(}\texttt{shapelet}\textbf{)}
-     \EndFor
-     \State $\texttt{differences} \gets \{\} \{\}$
-     \State $\texttt{minDifferences} \gets \{\}$
-     \For{\texttt{classValue in classValues}}
-     \For{\texttt{shapelet in shapeletBucket}}
-     	\State $\texttt{[classValue][shapelet.id]} \gets \textbf{}{abs(} \texttt{shapelet.prob -} \textbf{xl}$
-     \EndFor
-     \State $\texttt{minDifferences[classValue]} \gets \textbf{getMinDif(}\texttt{differences(classvalue))}$
-     \State $\texttt{newShapelet} \gets \textbf{getMinimumDiffShapelets(}\texttt{minDifferences[classValue],classValue}\textbf{}$
-     \State \texttt{shapeletArr[classValue].add(newShapelet)}
-     \EndFor
-      \State \textbf{return} $shapeletArr$\Comment{generated shapelets will be returned}
-    \EndProcedure
-  \end{algorithmic}
+\caption{Important Shapelets}\label{euclid}
+\begin{algorithmic}[ht]
+\newcommand{\Map}{\textbf{map()}}
+\newcommand{\List}{\textbf{list()}}
+\Procedure{GetImportantShapeletes(\small shapelets,data,classValues)}{}
+\State $shapeletArr \gets \List$
+\State $classValueProb \gets \List$
+\State $shapeletBucket \gets \Map$
+\State $clasNprob \gets \Map$
+\State $shapeDiff \gets \Map$
+\For {$i=0$ to $\textsc{classValues}.\textbf{size()}$}
+	\State $var \gets$ ShapeletBucket(\textsc{classValues}.\textbf {get(i)})
+    \State classValProbs.\textbf{add}(\textbf{findProb}(\textsc{data}, \textsc{classValues}.\textbf {get(i)}))
+    \State shapeletBucket.\textbf{put(\textsc{classValues}.\textbf {get(i)}, $var$)}
+\EndFor
+
+\ForAll {$s $ $\epsilon$ $\textsc{shapelets}$}
+          
+         \ForAll {$ val$ $\epsilon$ $ \textbf{MaxProbClassVal(s).keys()}$}
+
+	         \State $clasNprob$.\textbf{put($val$,$ \textbf{MaxProbClassVal(s).get($val$}$))};
+	         \State shapeletBucket.\textbf{get($val$).put($s$)};
+	         \EndFor
+\EndFor
+\State $count \gets 0$
+\ForAll { $c$ $\epsilon$ $\textsc{classValues}$}
+            \State $varMap \gets \Map $
+            \State $aVal \gets $classValProbs$.\textbf{get($count$)}$
+            \State $count = count +1$;
+            \ForAll{ $s \hspace{0.2cm}\epsilon \hspace{0.2cm}\ $shapeletBucket$.\textbf{get($c$).getShapeletSet()}$}
+
+                \State $val  \gets clasNprob.\textbf{get($c$)}$
+                \State $varMap.\textbf{put($s$, $val - aVal$)}$
+            
+            \State $shapeDiff.\textbf{put($c$,$varMap$)}$
+
+            \State $newMap \gets shapeDiff.\textbf{get($c$)}$
+
+            \State $newShape = \textbf{GetMinDifShape($newMap$)}$
+
+            \State $shapeletsArr.\textbf{add($newShape$)}$;
+            \EndFor
+\EndFor
+\State \texttt {return} $shapeletsArr$
+\EndProcedure
+\end{algorithmic}
+
 \end{algorithm}
 
 
