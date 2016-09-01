@@ -1,0 +1,60 @@
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{multicol}
+\usepackage{algorithm,algpseudocode,amsmath}
+
+
+\begin{document}
+
+\begin{algorithm}
+\caption{Important Shapelets}\label{euclid}
+\begin{algorithmic}[ht]
+\newcommand{\Map}{\textbf{map()}}
+\newcommand{\List}{\textbf{list()}}
+\Procedure{GetImportantShapeletes(\small shapelets,data,classValues)}{}
+\State $shapeletArr \gets \List$
+\State $classValueProb \gets \List$
+\State $shapeletBucket \gets \Map$
+\State $clasNprob \gets \Map$
+\State $shapeDiff \gets \Map$
+\For {$i=0$ to $\textsc{classValues}.\textbf{size()}$}
+	\State $var \gets$ ShapeletBucket(\textsc{classValues}.\textbf {get(i)})
+    \State classValProbs.\textbf{add}(\textbf{findProb}(\textsc{data}, \textsc{classValues}.\textbf {get(i)}))
+    \State shapeletBucket.\textbf{put(\textsc{classValues}.\textbf {get(i)}, $var$)}
+\EndFor
+
+\ForAll {$s $ $\epsilon$ $\textsc{shapelets}$}
+          
+         \ForAll {$ val$ $\epsilon$ $ \textbf{MaxProbClassVal(s).keys()}$}
+
+	         \State $clasNprob$.\textbf{put($val$,$ \textbf{MaxProbClassVal(s).get($val$}$))};
+	         \State shapeletBucket.\textbf{get($val$).put($s$)};
+	         \EndFor
+\EndFor
+\State $count \gets 0$
+\ForAll { $c$ $\epsilon$ $\textsc{classValues}$}
+            \State $varMap \gets \Map $
+            \State $aVal \gets $classValProbs$.\textbf{get($count$)}$
+            \State $count = count +1$;
+            \ForAll{ $s \hspace{0.2cm}\epsilon \hspace{0.2cm}\ $shapeletBucket$.\textbf{get($c$).getShapeletSet()}$}
+
+                \State $val  \gets clasNprob.\textbf{get($c$)}$
+                \State $varMap.\textbf{put($s$, $val - aVal$)}$
+            
+            \State $shapeDiff.\textbf{put($c$,$varMap$)}$
+
+            \State $newMap \gets shapeDiff.\textbf{get($c$)}$
+
+            \State $newShape = \textbf{GetMinDifShape($newMap$)}$
+
+            \State $shapeletsArr.\textbf{add($newShape$)}$;
+            \EndFor
+\EndFor
+\State \texttt {return} $shapeletsArr$
+\EndProcedure
+\end{algorithmic}
+
+\end{algorithm}
+
+\end{document}
