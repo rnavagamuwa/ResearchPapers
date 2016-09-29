@@ -1,0 +1,40 @@
+\documentclass[conference]{IEEEtran}
+\usepackage{filecontents,lipsum}
+\usepackage[noadjust]{cite}
+\begin{filecontents*}{references.bib}
+@article{Khoe:1994:CML:2288694.2294265,
+    author = {Khoe, G. -D.},
+    title = {Coherent multicarrier lightwave technology for flexible capacity networks},
+    journal = {Comm. Mag.},
+    issue_date = {March 1994},
+    volume = {32},
+    number = {3},
+    month = mar,
+    year = {1994},
+    issn = {0163-6804},
+    pages = {22--33},
+    numpages = {12},
+    url = {http://dx.doi.org/10.1109/35.267438},
+    doi = {10.1109/35.267438},
+    acmid = {2294265},
+    publisher = {IEEE Press},
+    address = {Piscataway, NJ, USA},
+}
+\end{filecontents*}
+\title{This document}
+\author{This author}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+\lipsum[1]
+\end{abstract}
+
+\lipsum[2-6]
+I have cited this document \cite{Khoe:1994:CML:2288694.2294265}
+
+\bibliographystyle{ieeetran}
+\bibliography{references}
+\end{document}
