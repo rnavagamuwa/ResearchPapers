@@ -14,7 +14,7 @@
 \usepackage{array}
 \usepackage{amsmath}
 \usepackage{filecontents,lipsum}
-\usepackage[noadjust]{cite}
+\usepackage{csquotes}
 
 
 \title{\LARGE \bf
@@ -71,7 +71,7 @@ We first define relevant terms and then define shapelets and parallel coordinate
 \smallskip\\
 \textbf{\textit{Sliding Window}} - Given a time series T, and a user-defined subsequence length of \(l\), all possible subsequences can be extracted by sliding a window of size  \(l\) across T and considering each subsequence Sp\textsuperscript{\(l\)} of T. Here \(l\) is the length of the subsequence and p is the starting position of the sliding window. The set of all subsequences of length l extracted from T is defined as ST\textsuperscript{\(l\)}, ST\textsuperscript{\(l\)}=\{Sp\textsuperscript{\(l\)} of T, for \(1 \leq p \leq m - l + 1\}\).
 \smallskip\\
-\textbf{\textit{Optimal Split Point (OSP)}}- A time series dataset D consists of two classes, A and B. For a shapelet candidate S, we choose some distance threshold dth and split D into D\textsubscript{1} and D\textsubscript{2}, such that for every time series object T\textsubscript{1,i} in D\textsubscript{1}, \(SubsequenceDist\)(T\textsubscript{1,i}, S)\(\leq\) d\textsubscript{th} and for every time series object T2,i in D2, SubsequenceDist(T2,i,S) ≥ dth. An Optimal Split Point is a distance threshold that \(Gain(S, d\textsubscript{OSP(D, S)}) \geq Gain(S, d'\textsubscript{th})\) for any other distance threshold d'\textsubscript{th}.
+\textbf{\textit{Optimal Split Point (OSP)}}- A time series dataset D consists of two classes, A and B. For a shapelet candidate S, we choose some distance threshold dth and split D into D\textsubscript{1} and D\textsubscript{2}, such that for every time series object T\textsubscript{1,i} in D\textsubscript{1}, \(SubsequenceDist(T\textsubscript{1,i}, S)\leq d\textsubscript{th}\) and for every time series object T2,i in D2, \(SubsequenceDist(T2,i,S) \geq dth\). An Optimal Split Point is a distance threshold that \(Gain(S, d\textsubscript{OSP(D, S)}) \geq Gain(S, d'\textsubscript{th})\) for any other distance threshold d'\textsubscript{th}.
 
 \subsection{Shapelets}
 
@@ -114,9 +114,6 @@ We propose a solution which can be used to generate CEP queries for multivariate
 \textbf{SELECT }\ \{*\} \\ \textbf{WHERE}\ \{attr1>a\ and \ attr2<b\} \\ \textbf{WITHIN}\ \{t1<time<t2\}
 \end{split}
 \end{equation}
-
-To auto generate relevant queries for Complex Event Processors, we propose the modularized architecture illustrated in Fig. 3. The four main components perform the following tasks:
-
 
 \subsection{Proposed Technique}
 To auto generate relevant queries for Complex Event Processors, we propose the modularized architecture illustrated in Figure 4. The four main components perform the following tasks:
@@ -377,36 +374,43 @@ The authors would like to thank the anonymous reviewers for their valuable comme
 
 \begin{thebibliography}{9}
 
-\bibitem{2} L. Ye and E. Keogh, “Time series shapelets,” pp. 947–956, Jun. 2009. [Online]. Available: http://dl.acm.org/citation.cfm?id=1557122. Accessed: Aug. 7, 2016.
+\bibitem{1} L. Ye and E. Keogh, \enquote{Time series shapelets,} ACM, 2009, pp.947-956.
 
-\bibitem{3} O. Patri, A. Sharma, H. Chen, G. Jiang, A. Panangadan, and V. Prasanna. Extracting discriminative shapelets from heterogeneous sensor data. In Big Data, 2014 IEEE International Conference on. IEEE, 2014.
+\bibitem{2} O. P. Patri, A. B. Sharma, H. Chen, G. Jiang, A. V. Panangadan, and V. K. Prasanna, \enquote{Extracting discriminative shapelets from heterogeneous sensor data,} 2014 IEEE International Conference on Big Data (Big Data), 2014.
 
-\bibitem{4} R. Mousheimish, Y. Taher, and K. Zeitouni, "Complex event processing for the non-expert with autoCEP," pp. 340–343, Jun. 2016. [Online]. Available: http://dl.acm.org/citation.cfm?id=2933296. Accessed: Jul. 24, 2016.
+\bibitem{3} R. Mousheimish, Y. Taher, and K. Zeitouni, \enquote{Complex event processing for the non-expert with autoCEP,} ACM, 2016, pp. 340-343.
 
-\bibitem{5} A. Margara, G. Cugola, and G. Tamburrelli. Towards automated rule learning for complex event processing. Technical report, Technical Report, 2013.
 
-\bibitem{6} A. Margara, G. Cugola, and G. Tamburrelli, "Learning from the past," pp. 47–58, May 2014. [Online]. Available: http://dl.acm.org/citation.cfm?id=2611289. Accessed: Jul. 24, 2016.
+\bibitem{4}A. Margara, G. Cugola, and G. Tamburrelli, \enquote{Towards automated rule learning for complex event processing,}.
 
-\bibitem{7} J. Johansson and C. Forsell, "Evaluation of parallel coordinates: Overview, Categorization and guidelines for future research," IEEE Trans. Visual. Comput. Graphics, vol. 22, no. 1, pp. 579–588, 2016.
+\bibitem{5} A. Margara, G. Cugola, and G. Tamburrelli, \enquote{Learning from the past,} ACM, 2014, pp. 47-58.
 
-\bibitem{8} X. Liu, S. Swift, A. Tucker, G. Cheng, and G. Loizou, "Modelling Multivariate time series,".
+\bibitem{6} J. Johansson and C. Forsell, \enquote{Evaluation of parallel coordinates: Overview, Categorization and guidelines for future research,} in IEEE transactions on visualization and computer graphics., 2015, vol. 22, no. 1, pp. 579-88.
+
+
+\bibitem{7}X. Liu, S. Swift, A. Tucker, G. Cheng, and G. Loizou, \enquote{Modelling Multivariate time series,}.
+
  
-\bibitem{9} Wistuba, M., Grabocka, J. and Schmidt-Thieme, L. (2015a) Title: Ultra-fast Shapelets for time series classification. Available at: http://arxiv.org/abs/1503.05018
+\bibitem{8} M. Wistuba, J. Grabocka, and L. Schmidt-Thieme, \enquote{Ultra-fast Shapelets for time series classification,}.
 
-\bibitem{10} H. Obweger, J. Schiefer, M. Suntinger, P. Kepplinger, and S. Rozsnyai, "User-oriented rule management for event-based applications," pp. 39–48, Nov. 2011. 
 
-\bibitem{10} Kavelar, A., Obweger, H., Schiefer, J., Suntinger, M.: Web-Based Decision Making for Complex Event Processing Systems. In: 6th World Congress on Services, pp. 453–458 (July 2010)
+\bibitem{9} H. Obweger, J. Schiefer, M. Suntinger, P. Kepplinger, and S. Rozsnyai, \enquote{User-oriented rule management for event-based applications,}Proceedings of the 5th ACM international conference on Distributed event-based system - DEBS \textquotesingle 11, 2011.
 
-\bibitem{11} A. Chotirat, E. Ratanamahatana, and Keogh, "Everything you know about dynamic time warping is wrong," 2004.
 
-\bibitem{12} L. Szathmary, A. Napoli, and P. Valtchev, "Towards rare Itemset mining," 19th IEEE International Conference on Tools with Artificial Intelligence(ICTAI 2007), 2007. [Online]. Available: http://www.philippe-fournier-viger.com/spmf/apriorirare.pdf. Accessed: Aug. 8, 2016.
+\bibitem{10}  A. Kavelar, H. Obweger, J. Schiefer, and M. Suntinger, \enquote{Web-Based Decision Making for Complex Event Processing Systems,} in 2010 IEEE 6th World Congress on Services, UC4 Senactive , Vienna, Austria, 2010, pp. 453-458.
 
-\bibitem{13} ronique Feldheim, "UCI machine learning repository: Occupancy detection data set," 2016. [Online]. Available: https://archive.ics.uci.edu/ml/datasets/Occupancy+Detection+.
 
-\bibitem{14} "UCI machine learning repository: EEG eye state data set," 2013. [Online]. Available: http://archive.ics.uci.edu/ml/datasets/EEG+Eye+State.
+\bibitem{11} A. Chotirat, E. Ratanamahatana, and Keogh, \enquote{Everything you know about dynamic time warping is wrong,} 2004.
 
-\bibitem{15} "UCI machine learning repository: Auto MPG data set," 1993. [Online]. Available: https://archive.ics.uci.edu/ml/datasets/Auto+MPG. Accessed: Sep. 26, 2016.
 
+\bibitem{12} L. Szathmary, A. Napoli, and P. Valtchev, \enquote{Towards rare Itemset mining,}19th IEEE International Conference on Tools with Artificial Intelligence(ICTAI 2007), 2007.
+
+
+\bibitem{13} ronique Feldheim, \enquote{UCI machine learning repository: Occupancy detection data set,} 2016.
+
+\bibitem{14} \enquote{UCI machine learning repository: EEG eye state data set,} 2013.
+
+\bibitem{15} \enquote{UCI machine learning repository: Auto MPG data set,} 1993.
 
 \end{thebibliography}
 
