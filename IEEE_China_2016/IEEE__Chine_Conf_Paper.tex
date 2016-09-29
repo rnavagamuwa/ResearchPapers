@@ -248,7 +248,9 @@ We have considered the time windows as follows
 \item Event - Occupancy (\textbf{occupancy=1}) considered time window (\textbf{time window 2}) : 2015-02-09 : 14:49:00 - 18:40:00
 \end{itemize}
 
+\begin{table}
 \begin{center}
+\caption{Occupancy dataset event detection results evaluation}
 \begin{tabular}{ | m{6cm} | m{2.3cm}| } 
  \hline 
 \textbf{Description} & \textbf{Value}\\
@@ -276,6 +278,7 @@ False Negative Value for non occupied event detection (Occupancy=1) & 0\\
 
 \end{tabular}
 \end{center}
+\end{table}
 
 \subsection{EEG Eye state dataset}
 All data is from one continuous EEG measurement with the Emotiv EEG Neuroheadset. [14] The duration of the measurement was 117 seconds. The eye state was detected via a camera during the EEG measurement and added later manually to the file after analysing the video frames. '1' indicates the eye-closed and '0' the eye-open state. All values are in chronological order with the first measured value at the top of the data. The two events which is in the occupancy dataset are detected using the identified most appropriate shapelets. Figure 9 and Figure 10 corresponds to the most appropriate shapelets to detect event 1 and event 2.
@@ -286,7 +289,7 @@ All data is from one continuous EEG measurement with the Emotiv EEG Neuroheadset
 \end{figure}
 
 \begin{figure}[h!]
-\includegraphics[width=0.5\textwidth]{EEG_event1.png}
+\includegraphics[width=0.5\textwidth]{EEG_event2.png}
 \caption{EEG eye state dataset's event 2 detected shapelets}
 \end{figure}
 
@@ -298,6 +301,8 @@ We have considered the time windows as follows
 \item Event - Occupancy (\textbf{occupancy=1}) considered time window (\textbf{time window 2}) : 14976s to 128232s
 \end{itemize}
 
+\begin{table}
+\caption{EEG Eye State dataset event detection results evaluation}
 \begin{center}
 \begin{tabular}{ | m{6cm} | m{2.3cm}| } 
  \hline 
@@ -326,6 +331,7 @@ False Negative Value for eye state close event detection & 1\newline(1/968=0.103
 
 \end{tabular}
 \end{center}
+\end{table}
 
 \section{CONCLUSION \& FUTURE WORK}
 
@@ -336,29 +342,7 @@ As extended future work the current implementation would be extended to generate
 Furthermore, there is a considerable amount of future work with respect to optimizing the classification of a non-classified dataset, the information gain calculation procedure, shapelet learner and shapelet extraction techniques. 
 
 
-\begin{thebibliography}{99}
-
-\bibitem{c1} L. Ye and E. Keogh, “Time series shapelets,” pp. 947–956, Jun. 2009. [Online]. Available: http://dl.acm.org/citation.cfm?id=1557122. Accessed: Aug. 7, 2016.
-\bibitem{c2} O. Patri, A. Sharma, H. Chen, G. Jiang, A. Panangadan, and V. Prasanna. Extracting discriminative shapelets from heterogeneous sensor data. In Big Data, 2014 IEEE International Conference on. IEEE, 2014.
-\bibitem{c3} R. Mousheimish, Y. Taher, and K. Zeitouni, "Complex event processing for the non-expert with autoCEP," pp. 340–343, Jun. 2016. [Online]. Available: http://dl.acm.org/citation.cfm?id=2933296. Accessed: Jul. 24, 2016.
-\bibitem{c4} A. Margara, G. Cugola, and G. Tamburrelli. Towards automated rule learning for complex event processing. Technical report, Technical Report, 2013.
-\bibitem{c5} A. Margara, G. Cugola, and G. Tamburrelli, "Learning from the past," pp. 47–58, May 2014. [Online]. Available: http://dl.acm.org/citation.cfm?id=2611289. Accessed: Jul. 24, 2016.
-\bibitem{c6} J. Johansson and C. Forsell, "Evaluation of parallel coordinates: Overview, Categorization and guidelines for future research," IEEE Trans. Visual. Comput. Graphics, vol. 22, no. 1, pp. 579–588, 2016.
-\bibitem{c7} X. Liu, S. Swift, A. Tucker, G. Cheng, and G. Loizou, "Modelling Multivariate time series,". 
-\bibitem{c8} Wistuba, M., Grabocka, J. and Schmidt-Thieme, L. (2015a) Title: Ultra-fast Shapelets for time series classification. Available at: http://arxiv.org/abs/1503.05018
-\bibitem{c9} H. Obweger, J. Schiefer, M. Suntinger, P. Kepplinger, and S. Rozsnyai, "User-oriented rule management for event-based applications," pp. 39–48, Nov. 2011. 
-\bibitem{c10} Kavelar, A., Obweger, H., Schiefer, J., Suntinger, M.: Web-Based Decision Making for Complex Event Processing Systems. In: 6th World Congress on Services, pp. 453–458 (July 2010)
-\bibitem{c11} A. Chotirat, E. Ratanamahatana, and Keogh, "Everything you know about dynamic time warping is wrong," 2004.
-\bibitem{c12} L. Szathmary, A. Napoli, and P. Valtchev, "Towards rare Itemset mining," 19th IEEE International Conference on Tools with Artificial Intelligence(ICTAI 2007), 2007. [Online]. Available: http://www.philippe-fournier-viger.com/spmf/apriorirare.pdf. Accessed: Aug. 8, 2016.
-\bibitem{c13} ronique Feldheim, "UCI machine learning repository: Occupancy detection data set," 2016. [Online]. Available: https://archive.ics.uci.edu/ml/datasets/Occupancy+Detection+.
-\bibitem{c14} "UCI machine learning repository: EEG eye state data set," 2013. [Online]. Available: http://archive.ics.uci.edu/ml/datasets/EEG+Eye+State.
-\bibitem{c15} "UCI machine learning repository: Auto MPG data set," 1993. [Online]. Available: https://archive.ics.uci.edu/ml/datasets/Auto+MPG. Accessed: Sep. 26, 2016.
-
-
-
-\end{thebibliography}
-
-
-
+\bibliographystyle{IEEEtran} 
+\bibliography{IEEEabrv,bibi}
 
 \end{document}
