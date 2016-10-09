@@ -52,7 +52,7 @@ Complex Event Processing, Multivariate Time Series, Parallel Coordinates, Shapel
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
 
-Automating query generation in large, multivariate datasets are useful in many applicationu domains. For example, Complex Event Processing (CEP) \cite{IEEEexample:autoCEP} combines data from multiple, streaming sources to identify meaningful events or patterns in real time. While the detection of relevant events and patterns may give insight about opportunities and threats related to the data being monitored (e.g., set of sensor readings and credit card transactions), significant domain knowledge is required to write effective CEP queries. Manual analysis of data streams is not only tedious and error prone, but also important events are likely to be missed due to the limited domain knowledge of the query writer. A promising alternative is to automate the CEP query generation by automatically extracting/mining interesting patterns from the past data \cite{IEEEexample:autoCEP,IEEEexample:TowardsAutomated,IEEEexample:LearningFromThePast}.
+Automating query generation in large, multivariate datasets are useful in many applicationu domains. For example, Complex Event Processing (CEP) \cite{IEEEexample:CEP} combines data from multiple, streaming sources to identify meaningful events or patterns in real time. While the detection of relevant events and patterns may give insight about opportunities and threats related to the data being monitored (e.g., set of sensor readings and credit card transactions), significant domain knowledge is required to write effective CEP queries. Manual analysis of data streams is not only tedious and error prone, but also important events are likely to be missed due to the limited domain knowledge of the query writer. A promising alternative is to automate the CEP query generation by automatically extracting/mining interesting patterns from the past data \cite{IEEEexample:autoCEP,IEEEexample:TowardsAutomated,IEEEexample:LearningFromThePast}.
 
 Time-series pattern mining and classification techniques are extensively studied in the literature. Dynamic Time Warping (DTW) \cite{IEEEexample:DTW} is one such technique used to measure the similarity between two time series based on a distance measure. However, the computational complexity of DTW grows exponentially with large and multiple time series limiting its usages. Moreover, the accuracy of the results depends on the chosen sliding window, which is nontrivial to estimate \cite{IEEEexample:autoCEP}. A shapelet \cite{IEEEexample:TimeSeriesShapelets} is a time series subsequence that is identified as being representative of class membership; hence, useful in time-series classification. AutoCEP \cite{IEEEexample:autoCEP} proposed a shapelet-based technique to automate the CEP query generation for univariate time series. This itself is a major limitation as the practical presence of univariate time series is limited in CEP. Moreover, AutoCEP generates queries for each and every instance of the detected event, requiring the CEP engine to concurrently process multiple queries. This unnecessarily increases the computational and memory requirements of the CEP engine and consequently degrades its performance. One trivial optimization is to use the assistance of a domain-expert to aggregate the queries and attempt to write one or few queries. Ultra-fast shapelets \cite{IEEEexample:UltraFast} are proposed for multivariate time-series classification. Ultra-fast shapelets calculates a vectorized representation of respective attributes of the dataset. Then a random forest is trained to identify the shapelets with respect to the total dataset. The leaves of the random forest are considered to be the symbols. The number of occurrences of a symbol in the raw data is counted and these symbol histograms are used for the final classification using random forests. While this technique is effective in classification, it cannot be used to generate CEP queries, as the generated random forest does not support backtracking and obtaining any relevant information as to what data lead to the classification of the event \cite{IEEEexample:UltraFast}. Rare itemset pattern mining (AprioriRare) \cite{IEEEexample:RareItemSet} is another technique. This technique cannot be used to detect events that occur within a short period of time. Moreover, most related work focus only on domain-specific datasets limiting the usability across diverse datasets and applications \cite{IEEEexample:UserOriented,IEEEexample:WebBased}.
 
@@ -188,9 +188,7 @@ The Shapelet Learner extracts all the shapelets from the obtained parallel coord
 We also calculate and save the information gain of each shapelets using \textit{infoGain()} function. \textit{infoGain()} function compares the shapelet with each and every row of the parallel coordinates. The minimum distance between the row and the shapelet is found by sliding the shapelet across the row, one attribute at a time (see Fig. \ref{fig:tsshapes}) and the minimum distance per each row is saved in an array, meaning there would be an array per each generated shapelet. Then by sequeuntially splitting the array we calculate the information gain. Finally for each shapelet we get the maximum information gain and the corresponding split point which would be the Optimum Splitting Point of the array. Each shapelet and its meta data are then added to the \textit{shapelets} list, which is returned by the algorithm.
 
 \subsection{Phase Two - Shapelet Extraction}
-All the extracted shapelets are first sorted according to their information gain. Then these shapelets are divide into a set of groups using Algorithm 2. Algorithm take the set of shapelets $S$ and number of shapelets per group ($group_{size}$) as the input. $group_{size}$ is proportional to the total number of shapelets. Though $group_{size}$ is selected based on the cluster pruning technique in which we obtained number of groups equal to the square root of the identified total shapelets or else a user is given the privilege with defining a specific number of groups, if desired. Then grouped shapelets are updated with adding its starting positions (or starting feature index) and its length (how many features it contains). This is implemented in line 13 and 14. Finally, the algorithm return all the merged(grouped) shapelets.
-
-Merged Shapelets are then used to find the best shapelets which would become the representatives of each of the events of the dataset out of all the constructed shapelets. This algorithm compares the probability values of shapelets with respect to its belonging group against the event distribution within the dataset and identifies the most suitable group of shapelets per event which is known as \textit{ShapeletBucket}.
+All the extracted shapelets are first sorted according to their information gain. Then these shapelets are divide into a set of groups using Algorithm 2. Algorithm take the set of shapelets $S$ and number of shapelets per group ($group_{size}$) as the input. $group_{size}$ is proportional to the total number of shapelets. Though $group_{size}$ is selected based on the cluster pruning technique in which we obtained number of groups equal to the square root of the identified total shapelets or else a user is given the privilege with defining a specific number of groups, if desired. Then grouped shapelets are updated with adding its starting positions (or starting feature index) and its length (how many features it contains). This is implemented in line 13 and 14. Finally, the algorithm return all the $mergedShapelets$. We call the above process as shapelets merging.
 
 \begin{figure}
 \includegraphics[width=0.5\textwidth]{Architecture.png}
@@ -200,28 +198,19 @@ Merged Shapelets are then used to find the best shapelets which would become the
 
 \begin{figure}
 \includegraphics[width=0.5\textwidth]{algo1.png}
-\label{fig:algo1}
 \end{figure}
 \begin{figure}
 \includegraphics[width=0.5\textwidth]{algo2.png}
-\label{fig:algo2}
 \end{figure}
+
+Each shapelet of the $mergedShapelets$ array will have three additional variables. They are as follows
 \begin{itemize}
 \item Class value
 \item Starting position
 \item Series ID
 \end{itemize}
-We call the above process as shapelets merging.
 
-Because the newly generated shapelet contains more than one shapelet, it has a two dimensional double array as the content. 
-%These generated shapelets (with two dimensional double array as the content) will be used as the input for our next algorithm, Important Shapelet Finder Algorithm. 
-
-\begin{figure}
-\includegraphics[width=0.5\textwidth]{algo3.png}
-\label{algo3}
-\end{figure}
-
-\textit{Important Shapelet Finder} algorithm (Algorithm 3) takes in three parameters, namely Merged Shapelets, Class Values (Event), and Classified dataset. Line 2 and 3 initialize two lists named \textit{shapletArr} and \textit{classValueProb} which would respectively contain important shapelets and probabilities for class values within the total dataset. Then for each class value, a \textit{set} data structure is created named \textit{shapeletBucket}. \textit{findProb()} function calculates the probability of the relevant class values within the dataset. In the next step, each merged shapelet is included into a relevant \textit{shapeletBucket} by \textit{maxProbClassVal()} function. The function \textit{maxProbClassVal()} produces most probable class values for each group of shapelets. Next, the algorithm finds the absolute differences between the probabilities of actual events and groups of shapelets. Then \textit{getMinDifShape()} function extracts a group of shapelets per each event. Finally, the extracted group of shapelets are added to the \textit{shapeletArr}. Here the class value represents an event of the obtained dataset.
+\textit{Important Shapelet Finder} algorithm (Algorithm 3) takes in three parameters, namely Merged Shapelets, Class Values (Event), and Classified dataset. Line 2 and 3 initialize two lists named \textit{shapletArr} and \textit{classValueProb} which would respectively contain important shapelets and probabilities for class values within the total dataset. Then for each class value, a \textit{set} data structure is created named \textit{shapeletBucket}. \textit{findProb()} function calculates the probability of the relevant class values within the dataset. In the next step, each merged shapelet is included into a relevant \textit{shapeletBucket} by \textit{maxProbClassVal()} function. The function \textit{maxProbClassVal()} produces most probable class values for each group of shapelets. Next, the algorithm 3 finds the absolute differences between the probabilities of actual events of the dataset and groups of shapelets where the absolute difference is calculated using the \textit{getMinDifShape()} function. Since the chosen group of shapelet per each event comprises the minimum difference with respect to the actual event distribution in the dataset, it enables us to choose the most representative groups of shapelets per each event. Finally, the extracted group of shapelets are added to the \textit{shapeletArr}. Here the class value represents an event of the obtained dataset.
 
 Regardless of the CEP query language, two blocks are needed to generate a meaningful CEP query for an event. First, the timeFrame (or window) of the rule need to be identified from the extracted shapelets. This will be defined using the \textit{within} construct. Second, the conditions that need to be met on the captured sequence of events in order for the rule to be fired, where the correspond block is defined using the where construct. 
 \vspace{0.1cm}
@@ -234,6 +223,11 @@ Regardless of the CEP query language, two blocks are needed to generate a meanin
 \textbf{within}[window] \{relevent events\} \textbf{where}[conditions]
 \label{eq:releventEvents}
 \end{equation}
+
+\begin{figure}
+\includegraphics[width=0.5\textwidth]{algo3.png}
+\end{figure}
+
 \section{Performance Analysis}
 We present detailed performance evaluation of automating query generation for CEP using shapelets and parallel coordination. We use two multivariate time series datasets from UCI machine learning repository \cite{IEEEexample:Ocupancy,IEEEexample:EEG} for evaluation purposes to prove that our technique can automate CEP query generation for different types of domains.
 
