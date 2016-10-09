@@ -3239,6 +3239,9 @@ Using a default centering column instead}%
 % If no argument is provided, \arrayrulewidth will be used for the rule thickness. 
 \newcommand\IEEEeqnarrayvrule[1][\arrayrulewidth]{\vrule\@width#1\relax}
 
+\newcommand{\squeezeup}{\vspace{-1.5mm}}
+\newcommand{\enlargeeup}{\vspace{1.5mm}}
+
 % creates a blank separator row
 % usage: \IEEEeqnarrayseprow[separation length][font size commands]
 % default is \IEEEeqnarrayseprow[0.25\normalbaselineskip][\relax]

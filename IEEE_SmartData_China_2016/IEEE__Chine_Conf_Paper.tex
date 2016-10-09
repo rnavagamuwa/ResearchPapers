@@ -63,6 +63,7 @@ Rest of the paper is organized as follows. Section II introduces shapelets, para
 \section{Preliminaries}
 We first define relevant terms and then define shapelets and parallel coordinates as applicable to the domain of CEP query generation. The research problem is then formulated.
 \subsection{Definitions}
+\noindent
 \textbf{\textit{Time-Series}} --- A time-series $T = t\textsubscript{1},..., t_m$ is an ordered set of \textit{m} real-valued variables.
 \smallskip\\
 \textbf{\textit{Multivariate Time-Series}} --- A multivariate time-series $T = t\textsubscript{1}, . . . , t_m$ is a sequence of \textit{m} vectors, where $t_i = (t_{i,1}, . . . , t_{i,s})$ $\epsilon$ $\mathbb{R}\textsuperscript{\(s\)}$ with \textit{s} attributes/variables.
@@ -70,7 +71,9 @@ We first define relevant terms and then define shapelets and parallel coordinate
 \textbf{\textit{Sub-sequence ($S^t_p$)}} --- Given a time-series $T$, a subsequence $S^t_p$ of $T$ is a sampling of length $l$ \(\leq\) $m$ of contiguous positions from $T$ starting at time $p$, i.e., $S^t_p = t_p, t_{p+1}...,t_{p+l-1}$, for 1 \(\leq p \leq m - l + 1\).
 \smallskip\\
 \textbf{\textit{Set of All Sub-sequences ($ST_l$)}} --- Set of all possible sub-sequences $S^t_p$ that can be extracted by sliding a window of length $l$ across $T$ is $ST_l$ = \{all $S^t_p$ of $T$,  for 1 \(\leq p \leq m - l + 1\)\}.
-\smallskip\\
+
+\enlargeeup
+\noindent
 \textbf{\textit{Sub-sequence Distance}} --- Given $T$ and $S^t_p$ \(SubsequenceDist(T,S^t_p)\) is the minimum distance between $p$ contiguous positions obtained by sliding $S^t_p$ across $T$. We use Euclidean distance as the distance function.
 \smallskip\\
 \textbf{\textit{Entropy}} --- A time series dataset \textbf{D} consists of two classes, $A$ and $B$. Given that the proportion of objects in class $A$ is $p(A)$ and the proportion of objects in class $B$ is $p(B)$, the entropy of \textbf{D} is
@@ -78,7 +81,7 @@ We first define relevant terms and then define shapelets and parallel coordinate
  I(\textbf{D}) = -p(A)log(p(A))  - p(B)log(p(B))
  \label{eq:id}
 \end{equation}
-\smallskip\\
+\noindent
 \textbf{\textit{Information Gain (Gain)}} --- Given a certain split strategy $sp$ which divides \textbf{D} into two subsets \textbf{D\textsubscript{1}} and \textbf{D\textsubscript{2}},the entropy before and after splitting is $I(\textbf{D})$ and $\hat{I}(\textbf{D})$. For a split $sp$ of the dataset the information gain is:
 \begin{equation}
 \begin{split}
@@ -119,11 +122,14 @@ Shapelets can be of varying lengths, and many sub-sequences can be extracted by 
 
 \subsection{Parallel Coordinates}
 Parallel coordinates are widely used to visualize multivariate data \cite{IEEEexample:ParallelCoordinates}. Fig.~\ref{fig:parallcor}. Fig.~\ref{fig:parallcor} illustrates the parallel coordinates representation of the room occupancy dataset obtained from the UCI Machine Learning repository \cite{IEEEexample:Ocupancy}. The complete dataset is visualized in grey colour and a selected set of data instances in black colour. Dataset with $n$ dimensions (i.e., attributes) is mapped to a set of points on $n$ parallel lines, where each line represents an instance of data. These points are then connected using a line. A separate line is drawn for each instance of data (i.e., each row). When scaling these coordinate systems, it is recommended to use normalized data to prevent bias to certain dimensions.
+
 \begin{figure}
 \includegraphics[width=9cm,height=4cm]{occupancy_d3.png}
 \caption{Parallel coordinates representation of Occupancy Detection dataset \cite{IEEEexample:Ocupancy}.}
 \label{fig:parallcor}
+\squeezeup
 \end{figure}
+
 
 \subsection{Problem Statement} 
 In contrast to relational database systems that issue dynamic queries on stored and indexed data, CEP filters incoming streams of data through pre-written queries to detect events of interest. Hence, relevant queries need to be provided to the CEP engine a priori. We address the problem of needing domain knowledge to write a meaningful CEP queries through automation. Though a couple of related work attempt to automate CEP query generation, they support only univariate time series data \cite{IEEEexample:autoCEP}.
@@ -197,10 +203,10 @@ All the extracted shapelets are first sorted according to their information gain
 \end{figure}
 
 \begin{figure}
-\includegraphics[width=0.5\textwidth]{algo1.png}
+\includegraphics[width=0.5\textwidth]{algo1.png}\squeezeup\squeezeup\squeezeup
 \end{figure}
 \begin{figure}
-\includegraphics[width=0.5\textwidth]{algo2.png}
+\includegraphics[width=0.5\textwidth]{algo2.png}\squeezeup\squeezeup\squeezeup
 \end{figure}
 
 Each shapelet of the $mergedShapelets$ array will have three additional variables. They are as follows
@@ -225,7 +231,7 @@ Regardless of the CEP query language, two blocks are needed to generate a meanin
 \end{equation}
 
 \begin{figure}
-\includegraphics[width=0.5\textwidth]{algo3.png}
+\includegraphics[width=0.5\textwidth]{algo3.png}\squeezeup\squeezeup
 \end{figure}
 
 \section{Performance Analysis}
@@ -241,12 +247,14 @@ This dataset results in 9,344 shapelets, and then the most appropriate shapelets
 \includegraphics[width=0.5\textwidth]{Occupancy_event1.png}
 \caption{"Non-Occupancy" event detected shapelets.}
 \label{fig:occupancyEvent1}
+\squeezeup\squeezeup
 \end{figure}
 
 \begin{figure}
 \includegraphics[width=0.5\textwidth]{Occupancy_event2.png}
 \caption{"Occupied" event detected shapelets.}
 \label{fig:occupancyEvent2}
+\squeezeup\squeezeup
 \end{figure}
 
 
@@ -257,7 +265,7 @@ We have considered the time windows as follows:
 \end{itemize}
 
 \begin{table}
-\begin{center}
+\centering
 \caption{Occupancy dataset event detection results.}
 \begin{tabular}{ | m{6cm} | m{2.3cm}| } 
  \hline 
@@ -289,8 +297,8 @@ False negatives for non-occupied event detection & \multicolumn{1}{|r|}{0}\\
 \hline
 
 \end{tabular}
-\end{center}
 \end{table}
+
 
 \subsection{EEG Eye state dataset}
 All data is from one continuous EEG measurement with the Emotiv EEG Neuroheadset \cite{IEEEexample:EEG}. The duration of the measurement was 117 seconds. The eye state was detected via a camera during the EEG measurement and added later manually to the file after analysing the video frames. '1' indicates the eye-closed and '0' the eye-open state. All values are in chronological order with the first measured value at the top of the data. The two events which is in the occupancy dataset are detected using the identified most appropriate shapelets. Fig.~\ref{fig:EEGEvent1} and Fig.~\ref{fig:EEGevent2} corresponds to the most appropriate shapelets to detect event 1 and event 2. The generated query will consist of the relevant attributes and it ranges with the optimal event detection time frame. Table \rom{2} summarizes the accuracy of detected events based on the auto generated queries.
@@ -317,8 +325,8 @@ We have considered the time windows as follows:
 \end{itemize}
 
 \begin{table}
+\centering
 \caption{EEG Eye State dataset event detection results.}
-\begin{center}
 \begin{tabular}{ | m{6cm} | m{2.3cm}| } 
  \hline 
 \textbf{Description} & \multicolumn{1}{|r|}{\textbf{Value}}\\
@@ -349,7 +357,6 @@ False negatives for eye state close event detection & \multicolumn{1}{|r|}{1 (1.
 \hline
 
 \end{tabular}
-\end{center}
 \end{table}
 
 \section{Summary and Future Work}
