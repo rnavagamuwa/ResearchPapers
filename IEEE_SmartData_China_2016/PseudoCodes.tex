@@ -7,31 +7,31 @@
 \begin{algorithm}
 \caption{Shapelet Learner Algorithm}\label{shapeletLearner}
 \begin{algorithmic}[1]
-\Procedure{ShapeletLearner}{$D,MaxLength,MinLength$}\Comment{Time series dataset D and shapelet length}
+\Procedure{ShapeletLearner}{$D,l\textsubscript{min},l\textsubscript{max}$}\Comment{Time series dataset D and shapelet length}
 \State $shapelets \gets \{\}$
-\For{\texttt{each row r in D}}
-	\State $wholeCandidate \gets r$
-	\State \texttt{length = MinLength}
-	\While{\texttt{length <= MaxLength}}
-		\State \texttt{length ++}
-		\State \texttt{start = 0}
-        		\While{\texttt{start <= r.length}}
-            		\State \texttt{start ++}
+\For{\texttt{each row \textit{r} in D}}
+	\State $wholeCandidate \gets \textit{r}$
+	\State $l \gets l\textsubscript{min}$
+	\While{$l \gets l\textsubscript{max}}$
+		\State $l ++$
+		\State $start \gets 0$
+        		\While{$start \gets \textit{r}.length$}
+            		\State $start ++$
             		\State $candidate \gets \{\}$
-           			\State \texttt{m = start}
-            		\While{\texttt{m<start + length}}
-                		\State \texttt{m++}
-                		\State \texttt{candidate[m - start] = wholeCandidate[m]}
+           			\State $m \gets start$
+            		\While{$m\textless start + length$}
+                		\State $m++$
+                		\State $candidate[m - start] \gets wholeCandidate[m]$
                 	\EndWhile
                 	\State $finalCandidate \gets newShapelet$
-                	\State \texttt{finalCandidate.setContent(} \textbf{zNorm(} \texttt{candidate}\textbf{))}
-                	\State \texttt{finalCandidate.setRawContent(candidate)}
-                	\State \texttt{finalCandidate.setInfoGain(} \textbf{infoGain(} \texttt{candidate}\textbf{))}
-                	\State \texttt{shapelets.add(finalCandidate)}
+                	\State $finalCandidate$\textbf{.setContent}\texttt{(}\textbf{zNorm}\texttt{(}$candidate$\texttt{))}
+                	\State $finalCandidate$\textbf{.setRawContent}\texttt{(}$candidate$\texttt{)}
+                	\State $finalCandidat$e\textbf{.setInfoGain(}\textbf{infoGain(}$candidate$\textbf{)}\texttt{)}
+                	\State $shapelets$\textbf{.add($finalCandidate$)}
             	\EndWhile
       \EndWhile
 \EndFor
-\State \textbf{return} $shapelets$\Comment{generated shapelets will e returned}
+\State \textbf{return} $shapelets$\Comment{generated shapelets will be returned}
 \EndProcedure
 \end{algorithmic}
 \end{algorithm}
@@ -39,9 +39,9 @@
 \begin{algorithm}
 \caption{Shapelet Merger Algorithm}\label{shapeletMerger}
 \begin{algorithmic}[1]
-\Procedure{ShapeletMerger}{$S,size$}\Comment{Shapelet Array S sorted according to information gains and size of the cluster}
+\Procedure{ShapeletMerger}{$S,size$}\Comment{Shapelet Array S sorted according to information gains and size of the group}
 \State $mergedShapelets \gets \{\}$
-\State $count \gets \textbf{S.size()}/size$
+\State $count \gets S\textbf{.size()}/size$
 \State $values \gets \{\{\}\}$    
 \State $currentRow \gets \{\}$
       
@@ -50,16 +50,17 @@
      \If{\texttt{count>0}}
      \State $currentRow \gets currentShapelet.\textbf{getRawContent()}$
      \State $rawSize \gets currentRow.\textbf{size()}-1$
-     \State $classVal \gets currentRow.\textbf{pop(}rawSize\textbf{})$
-     \State \texttt{currentRow.add(}\textbf{rawSize,currentShapelet.getSeriesId}
-     \State \texttt{currentRow.add(}\textbf{rawSize+1,currentShapelet.getSTartPos}
-     \State \texttt{currentRow.add(}\textbf{rawSize+2,classVal}
-     \State $index \gets shapelets.size()/requiredClassSize - count$
-     \State \texttt{values.add(index}\textbf{,currentRow} \texttt{)}
-     \State \texttt{count--}   
+     \State $classVal \gets currentRow.\textbf{get(}rawSize\textbf{})$
+     \State $ currentRow.\textbf{remove(}rawSize\textbf{})$
+     \State $currentRow$\textbf{.add(}$rawSize,currentShapelet$\textbf{.getSeriesId())}
+     \State $currentRow$\textbf{.add(}$rawSize+1,currentShapelet$\textbf{.getSTartPos())}
+     \State $currentRow$\textbf{.add(}$rawSize+2,classVal$\texttt{)}
+     \State $index \gets S$\textbf{.size()}\texttt{/}$size - count$
+     \State $values$\textbf{.add(}$index,currentRow$ \texttt{)}
+     \State $count--$   
      \Else
      	\State $count \gets \textbf{S.size()}/size$
-     	\State \texttt{mergedShapelet.add(}\textbf{new Shapelet(values)}\texttt{)}
+     	\State $mergedShapelet.$\textbf{add(}$new Shapelet(values)$\textbf{)}
      	\State $values \gets \{\{\}\}$ 
      \EndIf
 \EndWhile
@@ -73,31 +74,31 @@
 \begin{algorithmic}[1]
 \newcommand{\Map}{\textbf{map()}}
 \newcommand{\List}{\textbf{list()}}
-\Procedure{GetImportantShapeletes(\small shapelets,data,classValues)}{}
+\Procedure{GetImportantShapeletes($S,D,classValues$)}{}\Comment{Shapelet array S, Time Series Dataset D and array of class values}
 \State $shapeletArr \gets \List$
-\State $classValueProb \gets \List$
+\State $classValProbs \gets \List$
 \State $shapeletBucket \gets \Map$
 \State $clasNprob \gets \Map$
 \State $shapeDiff \gets \Map$
-\For {$i=0$ to $\textsc{classValues}.\textbf{size()}$}
-	\State $var \gets$ ShapeletBucket(\textsc{classValues}.\textbf {get(i)})
-    \State classValProbs.\textbf{add}(\textbf{findProb}(\textsc{data}, \textsc{classValues}.\textbf {get(i)}))
-    \State shapeletBucket.\textbf{put(\textsc{classValues}.\textbf {get(i)}, $var$)}
+\For {$i\gets0$ to $classValues.\textbf{size()}$}
+	\State $var \gets ShapeletBucket(classValues.\textbf {get(i)})$
+    \State $classValProbs$.\textbf{add}(\textbf{findProb}($D, classValues$.\textbf {get(i)}))
+    \State $shapeletBucket$.\textbf{put(}$classValues.$\textbf {get(i)}, $var$\textbf{)}
 \EndFor
 
-\ForAll {$s $ $\epsilon$ $\textsc{shapelets}$}
+\ForAll {$s $ $\epsilon$ $\textsc{S}$}
           
          \ForAll {$ val$ $\epsilon$ $ \textbf{MaxProbClassVal(s).keys()}$}
 
 	         \State $clasNprob$.\textbf{put($val$,$ \textbf{MaxProbClassVal(s).get($val$}$))};
-	         \State shapeletBucket.\textbf{get($val$).put($s$)};
+	         \State $shapeletBucket$.\textbf{get($val$).put($s$)};
 	         \EndFor
 \EndFor
 \State $count \gets 0$
-\ForAll { $c$ $\epsilon$ $\textsc{classValues}$}
+\ForAll { $c$ $\epsilon$ $classValues$}
             \State $varMap \gets \Map $
-            \State $aVal \gets $classValProbs$.\textbf{get($count$)}$
-            \State $count = count +1$;
+            \State $aVal \gets classValProbs.\textbf{get($count$)}$
+            \State $count \gets count +1$;
             \ForAll{ $s \hspace{0.2cm}\epsilon \hspace{0.2cm}\ $shapeletBucket$.\textbf{get($c$).getShapeletSet()}$}
 
                 \State $val  \gets clasNprob.\textbf{get($c$)}$
@@ -107,12 +108,12 @@
 
             \State $newMap \gets shapeDiff.\textbf{get($c$)}$
 
-            \State $newShape = \textbf{GetMinDifShape($newMap$)}$
+            \State $newShape \gets \textbf{GetMinDifShape($newMap$)}$
 
             \State $shapeletsArr.\textbf{add($newShape$)}$;
             \EndFor
 \EndFor
-\State \texttt {return} $shapeletsArr$
+\State \texttt {return} $shapeletsArr$ \Comment{Important shapelets array will be returned}
 \EndProcedure
 \end{algorithmic}
 
