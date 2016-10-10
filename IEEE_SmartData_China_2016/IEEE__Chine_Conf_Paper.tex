@@ -13,6 +13,7 @@
 \usepackage{array}
 \usepackage{amsmath}
 \usepackage{csquotes}
+\usepackage{multirow}
 
 \makeatletter
 \newcommand*{\rom}[1]{\expandafter\@slowromancap\romannumeral #1@}
@@ -41,7 +42,7 @@ Shapelets and Parallel Coordinates Based Automated Query Generation for Complex 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{abstract}
 
-Automating the query generation for Complex Event Processing (CEP) has marked its own importance in allowing users to obtain useful insights from data. Existing techniques are both computationally expensive and require extensive domain-specific human interaction. In addressing these issues, we propose a technique that combines both parallel coordinates and shapelets. First each instance of the multivariate data is represented as a line on a set of parallel coordinates. Then a shapelet-learner algorithm is applied to those lines to extract the relevant shapelets. Afterwards, the identified shapelets are ranked based on their information gain. Next, the shapelets with similar information gain are divided into groups by a shapelet-merger algorithm. The best group for each event is then identified based on the event distribution of the dataset. Then the best group is used to generate the query to detect the complex events. The proposed technique can be applied to both multivariate and multivariate time-series data, and it is computationally and memory efficient. It enables users to focus only on the shapelets with relevant information gains. We demonstrate the utility of the proposed technique using a set of real-world datasets.  
+Automating the query generation for Complex Event Processing (CEP) has marked its own importance in allowing users to obtain useful insights from data. Existing techniques are both computationally expensive and require extensive domain-specific human interaction. In addressing these issues, we propose a technique that combines both parallel coordinates and shapelets. First each instance of the multivariate data is represented as a line on a set of parallel coordinates. Then a shapelet-learner algorithm is applied to those lines to extract the relevant shapelets. Afterwards, the identified shapelets are ranked based on their information gain. Next, the shapelets with similar information gain are divided into groups by a shapelet-merger algorithm. The best group for each event is then identified based on the event distribution of the dataset. Then the best group is used to generate the query to detect the complex events. The proposed technique can be applied to both multivariate and multivariate time-series data, and it is computationally and memory efficient. It enables users to focus only on the shapelets with relevant information gains. We demonstrate the utility of the proposed technique using a set of real-world datasets.
 
 \end{abstract}
 
@@ -70,29 +71,31 @@ We first define relevant terms and then define shapelets and parallel coordinate
 \smallskip\\
 \textbf{\textit{Sub-sequence ($S^t_p$)}} --- Given a time-series $T$, a subsequence $S^t_p$ of $T$ is a sampling of length $l$ \(\leq\) $m$ of contiguous positions from $T$ starting at time $p$, i.e., $S^t_p = t_p, t_{p+1}...,t_{p+l-1}$, for 1 \(\leq p \leq m - l + 1\).
 \smallskip\\
-\textbf{\textit{Set of All Sub-sequences ($ST_l$)}} --- Set of all possible sub-sequences $S^t_p$ that can be extracted by sliding a window of length $l$ across $T$ is $ST_l$ = \{all $S^t_p$ of $T$,  for 1 \(\leq p \leq m - l + 1\)\}.
+\textbf{\textit{Set of All Sub-sequences ($ST_l$)}} --- Set of all possible sub-sequences $S^t_p$ that can be extracted by sliding a window of length $l$ across $T$ is $ST_l$ = \{all $S^t_p$ of $T$, for 1 \(\leq p \leq m - l + 1\)\}.
 
 \enlargeeup
 \noindent
 \textbf{\textit{Sub-sequence Distance}} --- Given $T$ and $S^t_p$ \(SubsequenceDist(T,S^t_p)\) is the minimum distance between $p$ contiguous positions obtained by sliding $S^t_p$ across $T$. We use Euclidean distance as the distance function.
 \smallskip\\
-\textbf{\textit{Entropy}} --- A time series dataset \textbf{D} consists of two classes, $A$ and $B$. Given that the proportion of objects in class $A$ is $p(A)$ and the proportion of objects in class $B$ is $p(B)$, the entropy of \textbf{D} is
+\textbf{\textit{Entropy}} --- Consider a time series dataset \textbf{D} consisting of two classes, $A$ and $B$. Let proportions of objects belonging to class $A$ and $B$ be $p(A)$ and $p(B)$, respectively. Then the entropy of \textbf{D} is:
 \begin{equation}
- I(\textbf{D}) = -p(A)log(p(A))  - p(B)log(p(B))
+ I(\textbf{D}) = -p(A)log(p(A)) - p(B)log(p(B))
  \label{eq:id}
 \end{equation}
 \noindent
-\textbf{\textit{Information Gain (Gain)}} --- Given a certain split strategy $sp$ which divides \textbf{D} into two subsets \textbf{D\textsubscript{1}} and \textbf{D\textsubscript{2}},the entropy before and after splitting is $I(\textbf{D})$ and $\hat{I}(\textbf{D})$. For a split $sp$ of the dataset the information gain is:
+\textbf{\textit{Information Gain (Gain)}} --- Given a certain split strategy $sp$ which divides \textbf{D} into two subsets \textbf{D\textsubscript{1}} and \textbf{D\textsubscript{2}}, let the entropy before and after splitting be $I(\textbf{D})$ and $\hat{I}(\textbf{D})$, respectively. Then the information gain for split $sp$ is:
 \begin{equation}
 \begin{split}
 Gain(\textit{sp}) = I(\textbf{D}) - \hat{I}(\textbf{D})\\
-Gain(\textit{sp}) = I(\textbf{D}) - (f(\textbf{D\textsubscript{1}})(I\textbf{D\textsubscript{1}})+f(\textbf{D\textsubscript{2}})I(\textbf{D\textsubscript{2}}))
+Gain(\textit{sp}) = I(\textbf{D}) - (p(\textbf{D\textsubscript{1}})(I\textbf{D\textsubscript{1}})+p(\textbf{D\textsubscript{2}})I(\textbf{D\textsubscript{2}}))
 \end{split}
 \label{eq:gain}
 \end{equation}
-Here $f(\textbf{D})$ is defined as the fraction of objects in \textbf{D}. 
-\smallskip\\
-\textbf{\textit{Optimal Split Point (OSP)}} --- Consider a time-series dataset \textbf{D} with two classes $A$ and $B$. For a given $S^t_p$, we choose some distance threshold $d_{th}$ and split \textbf{D} into \textbf{D}\textsubscript{1} and \textbf{D}\textsubscript{2}, s.t. for every time series object $T_{1,i}$ in \textbf{D}\textsubscript{1}, \(SubsequenceDist(T_{1,i}, S^t_p) \leq d\textsubscript{th}\) and for every $T_{2,i}$ in \textbf{D}\textsubscript{2}, \(SubsequenceDist(T_{2,i}, S^t_p) \geq d\textsubscript{th}\). An Optimal Split Point (OSP) is a distance threshold that \( Gain(S^t_p,d\textsubscript{OSP(D,$S^t_p$}) \geq Gain(S^t_p,d'_{th}) \) for any other distance threshold $d'_{th}$.
+
+\enlargeeup
+\noindent
+\textbf{\textit{Optimal Split Point (OSP)}} --- Consider a time-series dataset \textbf{D} with two classes $A$ and $B$. For a given $S^t_p$, we choose some distance threshold $d_{th}$ and split \textbf{D} into \textbf{D}\textsubscript{1} and \textbf{D}\textsubscript{2}, s.t. for every time series object $T_{1,i}$ in \textbf{D}\textsubscript{1}, $SubsequenceDist(T_{1,i}, S^t_p) \leq d_{th}$ and for every $T_{2,i}$ in \textbf{D}\textsubscript{2}, $SubsequenceDist(T_{2,i}, S^t_p) \geq d_{th}$. An Optimal Split Point (OSP) is a distance threshold that $Gain(S^t_p,d_{OSP(D,S^t_p)}) \geq Gain(S^t_p,d'_{th})$ for any other distance threshold $d'_{th}$.
+
 \subsection{Shapelets}
 \textit{Shapelets} can be defined as time-series sub-sequences as seen in Fig.~\ref{fig:shapelets}. 
 %A dataset can be converted to two dimensional representation of time series \cite{IEEEexample:TimeSeriesShapelets}. This representation can be used for time-series classification based on the shapes of the data within the time series. For example, many subsequences can be identified on a time series , and those subsequences are called shapelets. 
@@ -121,10 +124,10 @@ Shapelets can be of varying lengths, and many sub-sequences can be extracted by 
 \end{figure}
 
 \subsection{Parallel Coordinates}
-Parallel coordinates are widely used to visualize multivariate data \cite{IEEEexample:ParallelCoordinates}. Fig.~\ref{fig:parallcor}. Fig.~\ref{fig:parallcor} illustrates the parallel coordinates representation of the room occupancy dataset obtained from the UCI Machine Learning repository \cite{IEEEexample:Ocupancy}. The complete dataset is visualized in grey colour and a selected set of data instances in black colour. Dataset with $n$ dimensions (i.e., attributes) is mapped to a set of points on $n$ parallel lines, where each line represents an instance of data. These points are then connected using a line. A separate line is drawn for each instance of data (i.e., each row). When scaling these coordinate systems, it is recommended to use normalized data to prevent bias to certain dimensions.
+Parallel coordinates are widely used to visualize multivariate data \cite{IEEEexample:ParallelCoordinates}. Fig.~\ref{fig:parallcor}. Fig.~\ref{fig:parallcor} illustrates the parallel coordinates representation of the room occupancy dataset obtained from the UCI Machine Learning repository \cite{IEEEexample:Ocupancy}, which consists of six attributes. Dataset with $n$ dimensions (i.e., attributes) is mapped to a set of points on $n$ parallel lines, where each line represents an instance of data. These points are then connected using a line. A separate line is drawn for each instance of data (i.e., each row). For example, in Fig.~\ref{fig:parallcor} part of the dataset selected based on the "Light" attribute is shown in black, and rest of the dataset is visualized in grey. When scaling these coordinate systems, it is recommended to use normalized data to prevent bias to certain dimensions.
 
 \begin{figure}
-\includegraphics[width=9cm,height=4cm]{occupancy_d3.png}
+\includegraphics[width=9cm,height=3.5cm]{occupancy_d3.png}
 \caption{Parallel coordinates representation of Occupancy Detection dataset \cite{IEEEexample:Ocupancy}.}
 \label{fig:parallcor}
 \squeezeup
@@ -134,7 +137,7 @@ Parallel coordinates are widely used to visualize multivariate data \cite{IEEEex
 \subsection{Problem Statement} 
 In contrast to relational database systems that issue dynamic queries on stored and indexed data, CEP filters incoming streams of data through pre-written queries to detect events of interest. Hence, relevant queries need to be provided to the CEP engine a priori. We address the problem of needing domain knowledge to write a meaningful CEP queries through automation. Though a couple of related work attempt to automate CEP query generation, they support only univariate time series data \cite{IEEEexample:autoCEP}.
 
-We propose a solution which can be used to generate CEP queries for multivariate time series without requiring expert domain knowledge. In proposing the solution we assume that each instance in the obtained dataset is annotated according to the respective event. Our goal is to construct a filter query per event, which contains the most relevant attributes, their range of values, and the event detection time frame, e.g., a sample CEP filter query may look like the following:
+We propose a solution which can be used to generate CEP queries for multivariate time series without requiring expert domain knowledge. In proposing the solution we assume that each instance in the obtained dataset is annotated according to the respective event. Our goal is to construct a filter query per event, which contains the most relevant attributes, their range of values, and the event detection time frame. An example CEP filter query may look like the following:
 
 \begin{equation}
 \begin{split}
@@ -154,9 +157,9 @@ To auto generate queries for Complex Event Processors, we propose the modularize
 
 \textbf{Data Processor} --- Converts the input dataset (e.g., time series data in .txt, .xml, or .csv format) into a generic format used by rest of the modules. We assume that each instance in the given dataset corresponds to an occurrence of a specific event, i.e., each data instance is classified/labeled with the corresponding event. The module then counts the number of events of each type, and their proportions with respect to the total number of events in the entire dataset.
 
-\textbf{Shapelet Generator}	--- This is the core module of the system which uses pattern mining. This module identifies the most appropriate shapelets to represent each event. First, the multivariate time series dataset is mapped to a set of parallel coordinates. Fig.~\ref{fig:tsdata} illustrates an exemplary representation of a multivariate time series with six attributes and six time instances converted to parallel coordinates. Then all the shapelets are extracted from the parallel coordinates while varying the length $l$ of the sliding window. Though the shape of the extracted shapelets depend on the order of the attributes, final outcome of the solution is independent of the order. Length of an identified shapelet is bounded by number of attributes $m$ in the time series (i.e., $1 \leq l \leq m$). Therefore, our technique produces a much lower number of shaplets compared to prior work, where $m$ can be as large as the length of the time series. Moreover, it is not required to apply heuristics or expert knowledge to determine the optimum minimum and maximum length of shapelets. Therefore, our \textit{Shapelet Learner Algorithm} is both computationally and memory efficient.
+\textbf{Shapelet Generator}	--- This is the core module of the system which uses pattern mining. This module identifies the most appropriate shapelets to represent each event. First, the multivariate time series dataset is mapped to a set of parallel coordinates. Fig.~\ref{fig:tsdata} is an exemplary representation of a multivariate time series with six attributes and six time instances converted to parallel coordinates. Then all the shapelets are extracted from the parallel coordinates while varying the length $l$ of the sliding window. Though the shape of the extracted shapelets depend on the order of the attributes, final outcome of the solution is independent of the order. Length of an identified shapelet is bounded by number of attributes $m$ in the time series (i.e., $1 \leq l \leq m$). Therefore, our technique produces a much lower number of shaplets compared to prior work, where $m$ can be as large as the length of the time series. Moreover, it is not required to apply heuristics or expert knowledge to determine the optimum minimum and maximum length of shapelets. Therefore, our \textit{Shapelet Learner Algorithm} is both computationally and memory efficient.
 
-Once all shapelets are extracted, the next step is to identify a subset of the shapelets that are representative of patterns in the parallel coordinates. For this, we use information gain, which is an estimate of the extent that a selected shapelet is similar to a given line on parallel coordinates. For example, Fig.~\ref{fig:tsshapes} shows two shaplets, one with attributes 1 and 2 (shapelet $S_1$) and another with attributes 1, 2, and 3 (shapelet $S_2$). We slide both $S_1$ and $S_2$ across the line/row with $t$ = 0, and find the minimum distance between the shapelet and line. For example, $S_1$ has a relatively lower distance between the attributes 1-2 and 3-4, whereas $S_2$ has a relatively lower distance between attributes 1-3 and 4-6. This is estimated using the \textit{SubsequenceDist()} function defined in Sec. 2.1. The same process is applied to all other time instances and shapelets. This results in an array for shapelets and corresponding minimum distance for each time instance. We then find the Optimal Splitting Point (OSP) \cite{IEEEexample:TimeSeriesShapelets} for each array of minimum distances, to find the maximum information gain for each shapelet. The shapelets are then ranked based on the descending order of its information gain. We then use \textit{Shapelet Merger Algorithm} to group shapelets within the ranked list with respect to their information gain. Because the shapelets with similar information gains produce similar insights, groups created using \textit{Shapelet Merger Algorithm} allows us to cluster the similar informative shapelets together. Finally, \textit{Important Shapelet Extraction Algorithm} is used to identify the most suitable shapelets to represent each event type, which would result in an output similar to Fig.~\ref{fig:tswin}.
+Once all shapelets are extracted, the next step is to identify a subset of the shapelets that are representative of patterns in the parallel coordinates. For this, we use information gain to quantify the extent to which a selected shapelet is similar to a given line on parallel coordinates. For example, Fig.~\ref{fig:tsshapes} shows two shaplets, one with attributes 1 and 2 (shapelet $S_1$) and another with attributes 1, 2, and 3 (shapelet $S_2$). We slide both $S_1$ and $S_2$ across the line/row with $t$ = 5000, and find the minimum distance between the shapelet and line. For example, $S_1$ has a relatively lower distance between the attributes 1-2 and 3-4, whereas $S_2$ has a relatively lower distance between attributes 1-3 and 4-6. This is estimated using the \textit{SubsequenceDist()} function defined in Sec. 2.1. The same process is applied to all other time instances and shapelets. This results in a matrix of minimum distance values for each (shapelet, time instance) pair. We then find the Optimal Splitting Point (OSP) \cite{IEEEexample:TimeSeriesShapelets} for each row of minimum distance values, to find the maximum information gain for each shapelet. The shapelets are then ranked based on the descending order of its information gain. We then use \textit{Shapelet Merger Algorithm} to group shapelets within the ranked list with respect to their information gain. Because the shapelets with similar information gains produce similar insights, groups created using \textit{Shapelet Merger Algorithm} allows us to cluster the similar informative shapelets together. Finally, \textit{Important Shapelet Extraction Algorithm} is used to identify the most suitable shapelets to represent each event type, which would result in an output similar to Fig.~\ref{fig:tswin}.
 
 \textbf{Visual Representation} --- This module visualizes generated shapelets, optionally enabling users to select what shapelets to choose for query writing. While the system can auto generate queries without any user suggestions, this module facilitates and accepts user approval allowing the user to select the shapelets that user is interested in. As seen in Fig.~\ref{fig:tswin} user may also select subset of the attributes and their range of values that he/she expects to use in the generated queries. Such user intervention reduces false positives and improves performance of the CEP engine, as not every identified event may be of practical importance.
 
@@ -174,27 +177,29 @@ Once all shapelets are extracted, the next step is to identify a subset of the s
 
 \begin{figure}
 \includegraphics[width=0.5\textwidth]{demo.png}
-\caption{Event representative shapelets.}
+\caption{Shapelets that are representative of event.}
 \label{fig:tswin}
 \end{figure}
 
-\textbf{Query Generator} --- Given the chosen shapelets this module auto generates CEP queries based on the input provided by the hint generator module and incorporating any user provided hints. Here we generate one query per each event with the relevant query parameters generated by the system, or set of attributes and ranges approved by the user. The module identifies the most relevant attributes and their value ranges to be used in constructing the query along with the optimal time periods within which each event occurs. Optimal time periods are generated analyzing the event distribution of the actual dataset and choosing the longest event detection time period with respect to each event occurrence. Using these data the module generates queries for each and every event of the given dataset and a generates a filter query similar to (3).
+\textbf{Query Generator} --- Given the chosen shapelets this module auto generates CEP queries based on the input provided by the hint generator module and incorporating any user provided hints. Here we generate one query per each event with the relevant query parameters generated by the system, or set of attributes and ranges approved by the user. The module identifies the most relevant attributes and their value ranges to be used in constructing the query along with the optimal time periods within which each event occurs. Optimal time periods are identified by analyzing the event distribution of the actual dataset and choosing the longest event detection time period with respect to each occurrence of event. Using these data, the module generates filter queries (similar to Eq. 3) for each and every event of the given dataset.
 
 \section{Implementation}
 %Few and recent efforts that touched about Shapelets are discussed in \cite{IEEEexample:TimeSeriesShapelets,IEEEexample:ExtractingShapelets,IEEEexample:autoCEP}. 
-In this paper we introduce a new approach to define shapelets using parallel coordinates as an object with four attributes ${s = (g,i,a,c)}$. $g$ is the information gain, which measures the similarity between shapelet and time series. $i$ is the time series identifier, which is the row number of the line on parallel coordinates (see Fig.~\ref{fig:tsdata}). $a$ is the starting column/attribute number. We store the normalized values of the attributes which belong to the particular shapelet in $c$. In addition to the normalized values, we keep the original values as well( These original values will be used to generate the CEP query).
+In this paper we introduce a new approach to define shapelets using parallel coordinates as an object with four attributes ${s = (g,i,a,c)}$. $g$ is the information gain, which measures the similarity between shapelet and time series. $i$ is the time series identifier, which is the row number of the line on parallel coordinates (see Fig.~\ref{fig:tsdata}). $a$ is the starting column/attribute number. We store the normalized values of the attributes which belong to the particular shapelet in $c$. We also keep track of the original values $c$, as those are later required to generate CEP queries.
 
-We first transform the multivariate time series dataset into parallel coordinates. For example, Fig.~\ref{fig:parallcor} depicts the parallel coordinates representation of Occupancy Detection dataset, which we use for the first performance study. Our method builds upon two main phases which are illustrated in Fig.~\ref{fig:hintgen}. Next, implementation of each phase is discussed in detail.
+We first transform the multivariate time series dataset into parallel coordinates as seen in Fig.~\ref{fig:parallcor}. Our method builds upon two main phases which are illustrated in Fig.~\ref{fig:hintgen}. Next, implementation of each phase is discussed in detail.
 %We then extract all possible shapelets from the parallel coordinates representation. , and then identify important shapelets for further processing
 
 
 \subsection{Phase one: Shapelet Learner}
-The Shapelet Learner extracts all the shapelets from the obtained parallel coordinates. We set the default minimum length ($l{min}$) of a shapelet as two, while the maximum ($l{max}$) is set to the number of attributes $m$ (i.e., $2 \leq l \leq m$). However, a user may override these values. Afterwards, Algorithm 1 of the Shapelet Generator module extracts all possible shapelets while varying the shapelet length. First, the shapelet list is initialized to store the extracted shapelets (line 2). Then shapelets are extracted by going through each row $r$ in the Dataset \textbf{D}. The outer loop increments the length of a shapelet $l$ up to $l_{max}$, while the inner loop increments $start$ to scans through each $r$, and inner-most loop extract all attributes between $l_{min}$ to $l$ for a given staring point. Then we convert each shapelet’s content to standard normal using \textit{zNorm()} function to prevent any biases to specific attributes. Moreover, in line 19 we also store the raw values of shapelets, as they are later required while generating queries. 
+The \textit{Shapelet Learner} extracts all the shapelets from the obtained parallel coordinates. We set the default minimum length ($l_{min}$) of a shapelet as two, while the maximum ($l_{max}$) is set to the number of attributes $m$ (i.e., $2 \leq l \leq m$). However, a user may override these values. Afterwards, Algorithm 1 of the Shapelet Generator module extracts all possible shapelets while varying the shapelet length. First, the shapelet list is initialized to store the extracted shapelets (line 2). Then shapelets are extracted by going through each row $r$ in the Dataset \textbf{D}. The outer loop increments the length of a shapelet $l$ up to $l_{max}$, while the inner loop increments $start$ to scans through each $r$. The inner-most loop (line 13 -1 ) extracts all attributes between $l_{min}$ to $l$ for a given staring point. Then we convert each shapelet’s content to standard normal using \textit{zNorm()} function to prevent any biases to specific attributes. Moreover, in line 19 we also store the raw values of shapelets, as they are later required while generating queries. 
 
-We also calculate and save the information gain of each shapelets using \textit{infoGain()} function. \textit{infoGain()} function compares the shapelet with each and every row of the parallel coordinates. The minimum distance between the row and the shapelet is found by sliding the shapelet across the row, one attribute at a time (see Fig. \ref{fig:tsshapes}) and the minimum distance per each row is saved in an array, meaning there would be an array per each generated shapelet. Then by sequeuntially splitting the array we calculate the information gain. Finally for each shapelet we get the maximum information gain and the corresponding split point which would be the Optimum Splitting Point of the array. Each shapelet and its meta data are then added to the \textit{shapelets} list, which is returned by the algorithm.
+We also calculate and save the information gain of each shapelets using \textit{infoGain()} function (line 20). First, the \textit{SubsequenceDist()} function is used to find the minimum distance between the row and the shapelet by sliding the shapelet across the row, one attribute at a time (see Fig. \ref{fig:tsshapes}). By repeating the function, the minimum distance per each row is found and saved in an array. Then by sequeuntially splitting the array we calculate the information gain using Eq. 2. Finally, for each shapelet we get the maximum information gain and the corresponding split point, which would be the Optimum Splitting Point of the array. In line 21, each shapelet and its metadata are then added to the \textit{shapelets} list, which is later returned by the algorithm.
 
 \subsection{Phase Two - Shapelet Extraction}
-All the extracted shapelets are first sorted according to their information gain. Then these shapelets are divide into a set of groups using Algorithm 2. Algorithm take the set of shapelets $S$ and number of shapelets per group ($group_{size}$) as the input. $group_{size}$ is proportional to the total number of shapelets. Though $group_{size}$ is selected based on the cluster pruning technique in which we obtained number of groups equal to the square root of the identified total shapelets or else a user is given the privilege with defining a specific number of groups, if desired. Then grouped shapelets are updated with adding its starting positions (or starting feature index) and its length (how many features it contains). This is implemented in line 13 and 14. Finally, the algorithm return all the $mergedShapelets$. We call the above process as shapelets merging.
+All the extracted shapelets are first sorted according to their information gain. Then these shapelets are divide into a set of groups and then merged using Algorithm 2. Algorithm take the set of shapelets $S$ and number of shapelets per group ($group_{size}$) as the input. 
+%$group_{size}$ is proportional to the total number of shapelets. 
+$group_{size}$ is selected based on the cluster pruning technique in which we set the number of groups to the square root of the total number of identified shapelets. If desired, the user may also define the $group_{size}$. Then in line 12 to 15 the grouped shapelets are updated by adding their series ID (i.e., raw number), starting positions (i.e., starting attribute index), lengths (i.e., number of attributes), and class value (i.e., event type). Finally, the algorithm return all the merged shapelets (line 25).
 
 \begin{figure}
 \includegraphics[width=0.5\textwidth]{Architecture.png}
@@ -209,159 +214,126 @@ All the extracted shapelets are first sorted according to their information gain
 \includegraphics[width=0.5\textwidth]{algo2.png}\squeezeup\squeezeup\squeezeup
 \end{figure}
 
-Each shapelet of the $mergedShapelets$ array will have three additional variables. They are as follows
-\begin{itemize}
-\item Class value
-\item Starting position
-\item Series ID
-\end{itemize}
+%Each shapelet of the $mergedShapelets$ array will have three additional variables. They are as follows
+%\begin{itemize}
+%\item Class value
+%\item Starting position
+%\item Series ID
+%\end{itemize}
 
-\textit{Important Shapelet Finder} algorithm (Algorithm 3) takes in three parameters, namely Merged Shapelets, Class Values (Event), and Classified dataset. Line 2 and 3 initialize two lists named \textit{shapletArr} and \textit{classValueProb} which would respectively contain important shapelets and probabilities for class values within the total dataset. Then for each class value, a \textit{set} data structure is created named \textit{shapeletBucket}. \textit{findProb()} function calculates the probability of the relevant class values within the dataset. In the next step, each merged shapelet is included into a relevant \textit{shapeletBucket} by \textit{maxProbClassVal()} function. The function \textit{maxProbClassVal()} produces most probable class values for each group of shapelets. Next, the algorithm 3 finds the absolute differences between the probabilities of actual events of the dataset and groups of shapelets where the absolute difference is calculated using the \textit{getMinDifShape()} function. Since the chosen group of shapelet per each event comprises the minimum difference with respect to the actual event distribution in the dataset, it enables us to choose the most representative groups of shapelets per each event. Finally, the extracted group of shapelets are added to the \textit{shapeletArr}. Here the class value represents an event of the obtained dataset.
+\textit{Important Shapelet Finder} algorithm (Algorithm 3) takes in three parameters, namely merged shapelets, classified/labelled dataset. and class values (i.e., event types). Line 2 and 3 initialize two lists named \textit{shapletArr} and \textit{classValueProb}, which would respectively contain important shapelets and probabilities for class values within the total dataset. Then for each class value, a \textit{set} data structure is created named \textit{shapeletBucket}. \textit{findProb()} function calculates the probability of the relevant class values within the dataset, and then put that to \textit{shapeletBucket} (line 8 to 10). As the next step, (in line 12 to 17) each merged shapelet is included into a relevant \textit{shapeletBucket}, based on the most probable class values for each group of shapelets. This is achieved using \textit{maxProbClassVal()} function. Next, Algorithm 3 finds the absolute differences between the probabilities of actual events of the dataset and groups of shapelets. This is calculated using the \textit{getMinDifShape()} function (line 28). Because the chosen group of shapelets per each event comprises of the minimum difference with respect to the actual event distribution in the dataset, it enables us to choose the most representative groups of shapelets per each event. Finally, the extracted group of shapelets are added to the \textit{shapeletArr} (line 29).
 
-Regardless of the CEP query language, two blocks are needed to generate a meaningful CEP query for an event. First, the timeFrame (or window) of the rule need to be identified from the extracted shapelets. This will be defined using the \textit{within} construct. Second, the conditions that need to be met on the captured sequence of events in order for the rule to be fired, where the correspond block is defined using the where construct. 
-\vspace{0.1cm}
+Regardless of the CEP query language, two blocks are needed to generate a meaningful CEP query for an event (see Eq. 3). First, the time frame (or window) of the rule need to be identified from the extracted shapelets. This is specified using the \textit{within} construct. Second, the conditions that need to be met on the captured sequence of events is defined using the \textit{where} construct. Once the relevant parameters and constructs are known, we use the technique proposed in \cite{IEEEexample:autoCEP} to automatically generate the queries.
+%\vspace{0.1cm}
+%\begin{equation}
+%\textbf{within}[window] \textbf{where}[conditions]
+%\label{eq:withinWhere}
+%\end{equation}
+ The \textit{conditions} are extracted using the selected attributes and their respective range of the important shapelets. If user wants to get a CEP rule to identify multiple events, in addition to above two blocks, \textit{filter} block should be added as follows:
 \begin{equation}
-\textbf{within}[window] \textbf{where}[conditions]
-\label{eq:withinWhere}
-\end{equation}
- The \textit{conditions} are extracted using the selected attributes and their respective value regions of the important shapelets. If user wants to get a CEP rule to identify multiple events, in addition to above two blocks, \textbf{filter} block should be there. Filter block will be written between two curly brackets \textbf{\{\}}
-\begin{equation}
-\textbf{within}[window] \{relevent events\} \textbf{where}[conditions]
+\textbf{within}[window] \{relevent-events\} \textbf{where}[conditions]
 \label{eq:releventEvents}
 \end{equation}
 
 \begin{figure}
-\includegraphics[width=0.5\textwidth]{algo3.png}\squeezeup\squeezeup
+\includegraphics[width=0.5\textwidth]{algo3.png}\squeezeup\squeezeup\squeezeup
 \end{figure}
 
 \section{Performance Analysis}
-We present detailed performance evaluation of automating query generation for CEP using shapelets and parallel coordination. We use two multivariate time series datasets from UCI machine learning repository \cite{IEEEexample:Ocupancy,IEEEexample:EEG} for evaluation purposes to prove that our technique can automate CEP query generation for different types of domains.
+We use two multivariate time series datasets from UCI machine learning repository \cite{IEEEexample:Ocupancy,IEEEexample:EEG} to demonstrate that our technique can automate CEP query generation for different types of domains. We quantify the accuracy of the generated CEP queries using recall, precision, false positives, and false negatives. 
 
 \subsection{Occupancy Dataset} 
-“Occupancy Detection” dataset \cite{IEEEexample:Ocupancy} is a multivariate time-series dataset of which measure the occupancy factor of an office room with respect to light, temperature, humidity and CO2 measurements. It consists of 8,143 instances out of which 6,414 (78\%) instances are labeled as not occupied (occupancy = 0) while the rest (1,729 or 21\%) is labeled as occupied (occupancy = 1). Our objective was to auto generate queries to detect the occupied event as well as not occupied event along with a timely representation.
+“Occupancy Detection” dataset \cite{IEEEexample:Ocupancy} is a multivariate time-series dataset of which measure the occupancy factor of an office room with respect to light, temperature, humidity, and CO2 measurements. It consists of 8,143 instances out of which 6,414 (78\%) instances are labeled as not occupied (\textit{occupancy} = 0) while the remaining 1,729 (21\%) instances are labeled as occupied (\textit{occupancy} = 1). Our objective is to auto generate queries to detect both the occupied and not occupied events.
 
-This dataset results in 9,344 shapelets, and then the most appropriate shapelets are filtered out and used for the query generation process. Fig.~\ref{fig:occupancyEvent1} and Fig.~\ref{fig:occupancyEvent2} illustrates the most appropriate shapelets to detect occupied and non-occupied events. Most appropriate shapelets from Fig.~\ref{fig:occupancyEvent1} are within attribute 1 and attribute 3. The generated query will consist of the relevant attributes and it ranges with the optimal event detection time frame. Table \rom{1} summarizes the accuracy of detected events based on the auto generated queries.  
-
+This dataset results in 9,344 shapelets, and then the most appropriate shapelets are filtered out and used for the query generation process. Fig.~\ref{fig:occupancyEvent1} and Fig.~\ref{fig:occupancyEvent2} illustrate the most appropriate shapelets to detect not occupied and occupied events. Most appropriate shapelets of Fig.~\ref{fig:occupancyEvent1} are within attributes 1 and 3 (i.e., humidity and CO2). As seen on Fig.~\ref{fig:occupancyEvent2} for the occupied event CO2 and humidity ratio attributes are more relevant. The longest time window for not occupied events was between 17:32:00 - 22:23:00 on 2015/02/08. Whereas for the occupied events it was 14:49:00 - 18:40:00 on 2015/02/09. Based on these time gaps we set the event detection time frame. These attributes, their range of values, and the optimal event detection time frames are then used to generate queries.
 
 \begin{figure}
 \includegraphics[width=0.5\textwidth]{Occupancy_event1.png}
-\caption{"Non-Occupancy" event detected shapelets.}
+\caption{Shapelets corrosponding to not occupied events.}
 \label{fig:occupancyEvent1}
 \squeezeup\squeezeup
 \end{figure}
 
 \begin{figure}
 \includegraphics[width=0.5\textwidth]{Occupancy_event2.png}
-\caption{"Occupied" event detected shapelets.}
+\caption{Shapelets corrosponding to occupied events}
 \label{fig:occupancyEvent2}
 \squeezeup\squeezeup
 \end{figure}
 
 
-We have considered the time windows as follows:
-\begin{itemize}
-\item Non Occupied Events (\textbf{occupancy=0}) considered time window (\textbf{time window 1}) : 2015-02-08 : 17:32:00 - 22:23:00
-\item Occupied Events (\textbf{occupancy=1}) considered time window (\textbf{time window 2}) : 2015-02-09 : 14:49:00 - 18:40:00
-\end{itemize}
+Table \rom{1} summarizes the accuracy of detected events based on the auto generated queries. It can be seen that the generate CEP query is able to detect all the occupied events, it missed a few not occupied events (1.7\% of total dataset). However, false positives for occupied events were relatively high (18.4\%). Overall recall, precision, false positive, and false negative values are acceptable for both the occupied and not occupied events, indicating the usefulness of auto generate CEP queries. 
 
 \begin{table}
-\centering
 \caption{Occupancy dataset event detection results.}
-\begin{tabular}{ | m{6cm} | m{2.3cm}| } 
- \hline 
-\textbf{Description} & \multicolumn{1}{|r|}{\textbf{Value}}\\
+\begin{tabular}{ |l|l|l| }
 \hline
-No of non-occupied events within time windows 1 & \multicolumn{1}{|r|}{291}\\
+\textbf{Event} & \textbf{Metric} & \multicolumn{1}{|r|}{\textbf{Value}}\\
 \hline
-No of non-occupied events detected using generated CEP query & \multicolumn{1}{|r|}{286}\\
+\multirow{6}{*}{Not occupied} & No of events in dataset & \multicolumn{1}{|r|}{291}\\
+    & No of events detected using CEP query & \multicolumn{1}{|r|}{286}\\ 
+    & Recall & \multicolumn{1}{|r|}{98.28\%}\\
+    & Precision & \multicolumn{1}{|r|}{100.00\%}\\
+    & False positives & \multicolumn{1}{|r|}{0}\\
+    & False negatives & \multicolumn{1}{|r|}{5 (1.72\%)}\\
 \hline
-Recall of non-occupied event detection & \multicolumn{1}{|r|}{98.28\%}\\
+\multirow{6}{*}{Occupied} & No of events in dataset & \multicolumn{1}{|r|}{196}\\
+    & No of events detected using CEP query & \multicolumn{1}{|r|}{196}\\
+    & Recall & \multicolumn{1}{|r|}{100.00\%}\\
+    & Precision & \multicolumn{1}{|r|}{84.48\%}\\
+    & False positives & \multicolumn{1}{|r|}{36 (18.37}\\
+    & False negatives & \multicolumn{1}{|r|}{0}\\
 \hline
-Precision of non-occupied event detection & \multicolumn{1}{|r|}{100.00\%}\\
-\hline
-False positives for non-occupied event detection & \multicolumn{1}{|r|}{0}\\
-\hline
-False negatives for non-occupied event detection & \multicolumn{1}{|r|}{5 (1.72\%)}\\
-\hline
-No of occupied within time window 2 & \multicolumn{1}{|r|}{196} \\
-\hline
-No of occupied events detected using generated CEP query & \multicolumn{1}{|r|}{196}\\ 
- \hline
-Recall of occupied event detection & \multicolumn{1}{|r|}{100.00\%}\\
-\hline
-Precision of occupied event detection & \multicolumn{1}{|r|}{84.48\%}\\
-\hline
-False positives for occupied event detection & \multicolumn{1}{|r|}{36 (18.37\%)}\\
-\hline
-False negatives for non-occupied event detection & \multicolumn{1}{|r|}{0}\\
-\hline
-
 \end{tabular}
+\squeezeup\squeezeup
 \end{table}
 
 
-\subsection{EEG Eye state dataset}
-All data is from one continuous EEG measurement with the Emotiv EEG Neuroheadset \cite{IEEEexample:EEG}. The duration of the measurement was 117 seconds. The eye state was detected via a camera during the EEG measurement and added later manually to the file after analysing the video frames. '1' indicates the eye-closed and '0' the eye-open state. All values are in chronological order with the first measured value at the top of the data. The two events which is in the occupancy dataset are detected using the identified most appropriate shapelets. Fig.~\ref{fig:EEGEvent1} and Fig.~\ref{fig:EEGevent2} corresponds to the most appropriate shapelets to detect event 1 and event 2. The generated query will consist of the relevant attributes and it ranges with the optimal event detection time frame. Table \rom{2} summarizes the accuracy of detected events based on the auto generated queries.
+\subsection{EEG Eye State Dataset}
+Next, we used electroencephalogram (EEG) dataset related to opening and closing of eyes \cite{IEEEexample:EEG}. The eye state was detected via a camera during the EEG measurement, and later used to annotate the EEG time series by analysing the video frames. Eye-open state is indicated using binarry 0 while the eye-closed state is indicated using 1. Fig.~\ref{fig:EEGEvent1} and ~\ref{fig:EEGevent2} correspond to the most appropriate shapelets to detect event 0 and 1 respectively. Most appropriate shapelets for eye-open state are within attributes 8-13 (Fig.~\ref{fig:EEGEvent1}). As seen on Fig.~\ref{fig:EEGEvent1} attributes 4-5, 6-7, and 8-9 are more relevant for eye-closed event. The longest time window for eye-open state was between time stamps 128,349s to 204,516s, while for the eye-closed events it was 14,976s to 128,232s. We generate queries based on these three shapelets and event detection time frames. As there are three shapelets the \textbf{where} clause in Eq. 3 is of the form (\textit{Attr 4's range} AND \textit{Attr 5's range}) OR (\textit{Attr 6's range} AND \textit{Attr 7's range}) OR (\textit{Attr 8's range} AND \textit{Attr 9's range}).
+
+Table \rom{2} summarizes the accuracy of detected events based on the auto generated queries. For this dataset zero false positives are observed for both eye-open and eye-closed events. False negatively are also very low for both events (2.7\% and 0.1\%, respectively). Both the precision and recall are also close to 100\%, indicating that results queries are able to detect relevant events with good accuracy.
 
 \begin{figure}[h!]
 \includegraphics[width=0.5\textwidth]{EEG_event1.png}
-\caption{EEG eye state open event detected shapelets.}
+\caption{Shapelets corrosponding to EEG eye-open state.}
 \label{fig:EEGEvent1}
 \end{figure}
 
 \begin{figure}[h!]
 \includegraphics[width=0.5\textwidth]{EEG_event2.png}
-\caption{EEG eye state close event detected shapelets.}
+\caption{Shapelets corrosponding to EEG eye-closed state.}
 \label{fig:EEGevent2}
 \end{figure}
 
-Table \rom{2} displays a summarized representation of the obtained accuracy values of the generated queries for eye open and close events of the EEG Eye state dataset.
-
-We have considered the time windows as follows:
-\begin{itemize}
-\item Event - \textbf{Eye State Open} considered time window (time window 1) : 128349s to 204516s
-\item Event - \textbf{Eye State Close} considered time window (time window 2):
-14976s to 128232s
-\end{itemize}
+%Table \rom{2} displays a summarized representation of the obtained accuracy values of the generated queries for eye open and close events of the EEG Eye state dataset.
 
 \begin{table}
-\centering
 \caption{EEG Eye State dataset event detection results.}
-\begin{tabular}{ | m{6cm} | m{2.3cm}| } 
- \hline 
-\textbf{Description} & \multicolumn{1}{|r|}{\textbf{Value}}\\
+\begin{tabular}{ |l|l|l| }
 \hline
-No of eye state open events within time window 1 & \multicolumn{1}{|r|}{652}\\
+\textbf{Event} & \textbf{Metric} & \multicolumn{1}{|r|}{\textbf{Value}}\\
 \hline
-No of eye state open events detected using generated CEP query & \multicolumn{1}{|r|}{635}\\
+\multirow{6}{*}{Eye-open} & No of events in dataset & \multicolumn{1}{|r|}{652}\\
+    & No of events detected using CEP query & \multicolumn{1}{|r|}{635}\\ 
+    & Recall & \multicolumn{1}{|r|}{97.39\%}\\
+    & Precision & \multicolumn{1}{|r|}{100.00\%}\\
+    & False positives & \multicolumn{1}{|r|}{0}\\
+    & False negatives & \multicolumn{1}{|r|}{17 (2.67\%)}\\
 \hline
-Recall of eye state open event detection & \multicolumn{1}{|r|}{97.39\%}\\
+\multirow{6}{*}{Eye-closed} & No of events in dataset & \multicolumn{1}{|r|}{69}\\
+    & No of events detected using CEP query & \multicolumn{1}{|r|}{68}\\
+    & Recall & \multicolumn{1}{|r|}{98.55\%}\\
+    & Precision & \multicolumn{1}{|r|}{100.00\%}\\
+    & False positives & \multicolumn{1}{|r|}{0}\\
+    & False negatives & \multicolumn{1}{|r|}{1 (1.45\%)}\\
 \hline
-Precision of eye state open event detection & \multicolumn{1}{|r|}{100.00\%}\\
-\hline
-False positives for eye state open event detection & \multicolumn{1}{|r|}{0}\\
-\hline
-False negatives for eye state open event detection & \multicolumn{1}{|r|}{17 (2.67\%)}\\
-\hline
-No of eye state close events within time window 2 & \multicolumn{1}{|r|}{69}\\
-\hline
-No of eye state close events detected using CEP query generated & \multicolumn{1}{|r|}{68}\\
-\hline
-Recall of eye state close event detection & \multicolumn{1}{|r|}{98.55\%}\\
-\hline
-Precision of eye state close event detection & \multicolumn{1}{|r|}{100.00\%}\\
-\hline
-False positives for eye state close event detection & \multicolumn{1}{|r|}{0}\\
-\hline
-False negatives for eye state close event detection & \multicolumn{1}{|r|}{1 (1.45\%)}\\
-\hline
-
 \end{tabular}
+\squeezeup\squeezeup
 \end{table}
 
 \section{Summary and Future Work}
-
-Proposed solution identifies shapelets in the whole dataset and store relevant attributes for each shapletes. Information gain, Starting position and Shapelets contents are important attributes for further processes. First phase of the solution does this shapelets learning process using shapelet learning algorithm. Second phase is related with the classified values of the dataset where it finds a relationship with shapelets and the classified dataset. It happens by comparing information gains and probabilities of occurrences of shapletes. In future we plan to extend the proposed technique work with unlabeled datasets, as well as optimize the information gain calculation procedure, shapelet learner, and shapelet extraction techniques.
+We proposed technique to automatically generate CEP queries based on multivariate time series data. The proposed technique first map the multivariate time series to a set of parallel coordinates. Then key patterns that are representative of the events are identified using time series shapelets. We also propose a technique to identify the most relevant shapeless per event, such that only a single CEP query will be generated per event. The proposed technique is both computationally and memory efficient compared to prior work, as the length of a shapelet is bounded by the number of attributes. Moreover, the performance of the CEP engine is also improved, as only one query will be generated per events. Furthermore, using two real datasets, we demonstrate that the resulting queries have good accuracy in detecting relevant events. In future we plan to further improve the accuracy and extend the proposed technique work with unlabeled time series datasets.
 
 \nocite{*}
 \bibliographystyle{IEEEtran}
